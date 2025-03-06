@@ -4,10 +4,7 @@ import { defineConfig } from 'vite';
 
 export default defineConfig({
     plugins: [sveltekit()],
-    server: {
-        port: 3000,
-        host: true
-    },
+
     test: {
         workspace: [{
             extends: "./vite.config.ts",
