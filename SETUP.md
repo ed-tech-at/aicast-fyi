@@ -10,3 +10,11 @@ node adapter
 package manager
 npm
 
+# Database
+
+```
+npm install prisma --save-dev
+npm install @prisma/client
+
+npx prisma init
+```
