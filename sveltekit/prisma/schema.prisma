@@ -11,4 +11,13 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+}
+
+
+model ApiKeys {
+  apiId           Int      @id @default(autoincrement())
+  apiType         String?
+  apiKey          String?   @db.VarChar(255)
+  apiPlaceholder  String?   @db.VarChar(255)
 }
