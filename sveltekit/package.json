@@ -20,6 +20,7 @@
 		"@sveltejs/vite-plugin-svelte": "^5.0.0",
 		"@testing-library/jest-dom": "^6.6.3",
 		"@testing-library/svelte": "^5.2.4",
+		"@types/uuid": "^10.0.0",
 		"jsdom": "^26.0.0",
 		"prisma": "^6.5.0",
 		"svelte": "^5.0.0",
@@ -29,6 +30,7 @@
 		"vitest": "^3.0.0"
 	},
 	"dependencies": {
-		"@prisma/client": "^6.5.0"
+		"@prisma/client": "^6.5.0",
+		"uuid": "^11.1.0"
 	}
 }

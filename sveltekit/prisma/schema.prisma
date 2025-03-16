@@ -21,3 +21,16 @@ model ApiKeys {
   apiKey          String?   @db.VarChar(255)
   apiPlaceholder  String?   @db.VarChar(255)
 }
+
+model Episodes {
+  id           String   @id @default(uuid())
+  episodeUrl   String?   @unique @db.VarChar(255)
+  email        String
+  title        String?
+  desc         String?
+  apiKeyLLM    String?
+  apiKeyAudio  String?
+  createdDate  DateTime @default(now())
+  updatedDate  DateTime?
+}
+
