@@ -15,14 +15,14 @@ datasource db {
 }
 
 
-model ApiKeys {
+model ApiKey {
   apiId           Int      @id @default(autoincrement())
   apiType         String?
   apiKey          String?   @db.VarChar(255)
   apiPlaceholder  String?   @db.VarChar(255)
 }
 
-model Episodes {
+model Episode {
   id           String   @id @default(uuid())
   episodeUrl   String?   @unique @db.VarChar(255)
   email        String
@@ -33,4 +33,34 @@ model Episodes {
   createdDate  DateTime @default(now())
   updatedDate  DateTime?
 }
+
+model Element {
+  id             String   @id @default(uuid())
+  createdDate    DateTime @default(now())
+  type           String
+  text           String?
+  userQuestion   String?
+  f_episodeId    String
+  position       Int
+}
+
+model Audio {
+  id           String   @id @default(uuid())
+  createdDate  DateTime @default(now())
+  f_elementId  String
+  voice_id     String
+  text         String?
+  language_code String
+}
+
+model LLMGeneratedText {
+  id              String   @id @default(uuid())
+  createdDate     DateTime @default(now())
+  f_elementId     String
+  developerPrompt String?
+  prompt          String?
+  result          String?
+}
+
+
 
