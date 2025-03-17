@@ -158,7 +158,7 @@
   {#if audioElement}
     Audio: {audioElement}
      <audio controls>
-      <source src={`/data/audio/${audioElement}`} type="audio/mp3">
+      <source src={`/api/audio/${audioElement}`} type="audio/mp3">
       Your browser does not support the audio element.
     </audio>
   {:else if audioElement === null}

@@ -3,7 +3,7 @@ import fs from 'fs';
 import path from 'path';
 
 const prisma = new PrismaClient(); // Initialize Prisma Client
-const AUDIO_DIR = path.join(process.cwd(), 'static', 'data', 'audio'); // Directory for storing MP3s
+const AUDIO_DIR = path.join(process.cwd(), 'data', 'audio'); // Directory for storing MP3s
 
 console.log("Current working directory:", process.cwd());
 
