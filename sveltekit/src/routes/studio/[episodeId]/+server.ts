@@ -4,6 +4,9 @@ import { PrismaClient } from '@prisma/client';
 import { newEpisodeElementUUID, getMaxPosition, spaceElementPositionForEpisode } from '$lib/server/utils';
 import { get } from 'svelte/store';
 
+import fs from 'fs';
+import path from 'path';
+
 import { generateAudio } from '$lib/server/audio';
 import { generateLLMResponse } from '$lib/server/llm.js';
 
@@ -160,6 +163,17 @@ export async function POST({ request, params }) {
 
         if (existingAudio) {
             console.log('Audio is already generated in checkAudioGenerated:', existingAudio.id);
+
+
+            const AUDIO_DIR = path.join(process.cwd(), 'static', 'data', 'audio'); // Directory for storing MP3s
+            
+            const existingAudioPath = path.join(AUDIO_DIR, `${existingAudio.id}.mp3`);
+            console.log(`1. Returning existing audio file: ${existingAudioPath}`);
+            if (fs.existsSync(existingAudioPath)) {
+                console.log(`2. Returning existing audio file: ${existingAudioPath}`);
+                // return {filename: `${existingAudio.id}.mp3`, cached: true}; // Return the existing file
+            }
+
             return json({ success: true, cached: true, filename: `${existingAudio.id}.mp3` });
         }
          else {
