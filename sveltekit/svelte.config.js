@@ -8,7 +8,10 @@ const config = {
 	preprocess: vitePreprocess(),
 
 	kit: {
-		adapter: adapter()
+		adapter: adapter(),
+		files: {
+			assets: 'static'  // Stellt sicher, dass SvelteKit `static/` als statisches Verzeichnis behandelt
+		}
 	}
 };
 
