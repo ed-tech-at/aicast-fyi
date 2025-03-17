@@ -159,7 +159,7 @@ export async function POST({ request, params }) {
         });
 
         if (existingAudio) {
-            console.log('Audio is already generated:', existingAudio.id);
+            console.log('Audio is already generated in checkAudioGenerated:', existingAudio.id);
             return json({ success: true, cached: true, filename: `${existingAudio.id}.mp3` });
         }
          else {
