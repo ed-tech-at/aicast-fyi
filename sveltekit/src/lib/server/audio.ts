@@ -47,8 +47,9 @@ export async function generateAudio(
 
         if (existingAudio) {
             const existingAudioPath = path.join(AUDIO_DIR, `${existingAudio.id}.mp3`);
+            console.log(`1. Returning existing audio file: ${existingAudioPath}`);
             if (fs.existsSync(existingAudioPath)) {
-                console.log(`Returning existing audio file: ${existingAudioPath}`);
+                console.log(`2. Returning existing audio file: ${existingAudioPath}`);
                 return {filename: `${existingAudio.id}.mp3`, cached: true}; // Return the existing file
             }
 
