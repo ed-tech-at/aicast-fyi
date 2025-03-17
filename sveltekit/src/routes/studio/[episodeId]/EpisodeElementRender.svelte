@@ -3,12 +3,9 @@
   export let episodeId; // Added episodeId export
   export let elementSubmit;
 
-  import type { Audio } from '@prisma/client';
-
-  import { PrismaClient } from '@prisma/client'; // Importing PrismaClient to query the database
   
-  const prisma = new PrismaClient(); // Initialize Prisma Client
 
+  
   function handleElementSubmit(event: Event) {
     elementSubmit(event); // Call the passed function
     checkAudioCache(); // Check for audio cache after submitting
