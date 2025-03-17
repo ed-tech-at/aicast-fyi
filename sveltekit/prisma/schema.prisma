@@ -34,7 +34,7 @@ model Episode {
   updatedDate  DateTime?
 }
 
-model Element {
+model EpisodeElement {
   id             String   @id @default(uuid())
   createdDate    DateTime @default(now())
   type           String

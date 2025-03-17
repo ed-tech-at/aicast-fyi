@@ -1,9 +1,11 @@
 <script lang="ts">
-  export let data: { emailLookup: string; episodes: Array<{ id: string; title?: string; desc?: string; createdDate: string }>; date: string };
+    import type { Episode } from "@prisma/client";
+  
+  export let data: { episodes: Episode[]; date: string };
 </script>
 
 <main>
-  <h1>Lookup for: {data.emailLookup}</h1>
+  <h1>Admin Lookup for Episode</h1>
 
   {#if data.episodes.length > 0}
     <ul>
