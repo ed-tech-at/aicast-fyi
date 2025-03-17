@@ -39,6 +39,7 @@
     } catch (error) {
       console.error('Error checking audio cache:', error);
       audioElement = 'Error checking audio cache: ' + error.message;
+      audioElement = null;
     }
   }
 
