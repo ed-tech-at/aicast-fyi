@@ -28,6 +28,18 @@ export async function newEpisodeElementUUID() {
   return uuid;
 }
 
+export async function newAudioUUID() {
+  let uuid;
+  let exists = true;
+
+  while (exists) {
+    uuid = uuidv4();
+    const existing = await prisma.audio.findUnique({ where: { id: uuid } });
+    if (!existing) exists = false;
+  }
+  return uuid;
+}
+
 
 export async function getMaxPosition(episodeId : string) {
   const maxPosition = await prisma.episodeElement.findFirst({

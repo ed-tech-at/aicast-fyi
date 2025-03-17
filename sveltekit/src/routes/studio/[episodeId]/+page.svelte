@@ -1,7 +1,8 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { invalidate } from '$app/navigation';
-
+  // import { renderEpisodeElementBackend } from '$lib/utils';
+  import EpisodeElementRender from './EpisodeElementRender.svelte';
   
   import type { Episode, EpisodeElement } from '@prisma/client';
 
@@ -10,7 +11,7 @@
   let title = data.episode.title || '';
   let desc = data.episode.desc || '';
 
-  async function handleSubmit(event: Event) {
+  async function updateEpisode(event: Event) {
     event.preventDefault();
 
     const response = await fetch(`/studio/${data.episodeId}`, {
@@ -19,8 +20,7 @@
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        title,
-        desc,
+        form: JSON.stringify({ title, desc }),
         action: 'update'
       }),
     });
@@ -35,6 +35,53 @@
 
     } else {
       console.error('Error updating episode:', result.error);
+    }
+  }
+  
+  
+  async function elementSubmit(event: Event) {
+    
+    event.preventDefault();
+    const form = event.target as HTMLFormElement;
+    const formData = new FormData(form);
+
+    // Extract the element ID and text
+    const elementId = formData.get("id") as string;
+    const text = formData.get("text") as string;
+    const userQuestion = formData.get("userQuestion") as string; // Change this line to correctly get the user input
+    const type = formData.get("type") as string; // Change this line to correctly get the user input
+    const developerPrompt = formData.get("developerPrompt") as string; // Change this line to correctly get the user input
+
+
+    console.log("Form Data:", formData);
+
+    console.log("Element ID:", elementId);
+    console.log("Text:", text);
+    console.log("User Question:", userQuestion); // Log userQuestion for debugging
+    console.log("Type:", type); // Log type for debugging
+    
+
+    const response = await fetch(`/studio/${data.episodeId}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        form: JSON.stringify({ text, userQuestion, developerPrompt, type, elementId }),
+        action: 'updateElement'
+      }),
+    });
+
+    const result = await response.json();
+    
+    if (result.success) {
+      
+      console.log('Element updated successfully:', result);
+
+      data.episodeElements = result.episodeElements; // Update episode elements
+
+    } else {
+      console.error('Error updating element:', result.error); // Update error message
     }
   }
 
@@ -122,7 +169,7 @@
   <h1>Episode: {data.episodeId}</h1>
 
   {#if data.episode}
-    <form on:submit={handleSubmit}>
+    <form on:submit={updateEpisode}>
       <div>
 
         <label for="title">Title:</label>
@@ -146,15 +193,18 @@
     <hr />
     <h2>Elements</h2>
 
-    <ul>
+    <!-- <ul> -->
       {#each data.episodeElements as episodeElement}
-        <li>
-          {episodeElement.createdDate} {episodeElement.type} {episodeElement.position}
+        <!-- <li> -->
+          <!-- {episodeElement.createdDate} {episodeElement.type} {episodeElement.position} -->
+
+          <EpisodeElementRender element={episodeElement} episodeId={data.episodeId} elementSubmit={elementSubmit} />
+
           <button on:click={() => moveElementUp(episodeElement.id)}>Move Up</button>
           <button on:click={() => moveElementDown(episodeElement.id)}>Move Down</button>
-        </li>
+        <!-- </li> -->
       {/each}
-    </ul>
+    <!-- </ul> -->
 
 
     <button on:click={createElement}>Create Element</button>
