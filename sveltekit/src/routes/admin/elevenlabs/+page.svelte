@@ -1,7 +1,11 @@
 <script lang="ts">
+    import type { Audio } from 'openai/resources/index.mjs';
   import { onMount } from 'svelte';
 
   let voices = [];
+
+  export let data: { audios: Audio[]; date: string };
+
 
   async function fetchVoices() {
     try {
@@ -61,7 +65,42 @@
   }
 
 
+  function loadPlayer(sender, audioId) {
+        const player = document.getElementById(`player-${audioId}`);
+        if (player) {
+          player.style.display = 'block';
+        }
+        sender.style.display = 'none';
+      }
+
 </script>
+
+
+<h1>Admin </h1>
+
+<a href="/admin/episode">Episodes</a>
+
+
+{#each data.audios as audio}
+  <div>
+    <p>{audio.text}<br>
+    <code>{audio.id}</code> - {audio.createdDate} 
+    <br>
+    <button on:click={(event) => loadPlayer(event.currentTarget, audio.id)}>Load Player</button>
+    <audio id={`player-${audio.id}`} controls style="display: none;">
+      <source src={`/api/audio/${audio.id}.mp3`} type="audio/mpeg" />
+      Your browser does not support the audio element.
+    </audio>
+    </p>
+   
+  </div>
+{/each}
+
+
+<div>List of ElevenLabs voices</div>
+
+
+
 
 <ul>
   {#each voices as voice}
@@ -76,14 +115,4 @@
     </li>
   {/each}
 </ul>
-
-<h1>Admin </h1>
-
-<a href="/admin/episode">Episodes</a>
-
-<div>List of ElevenLabs voices</div>
-
-
-
-
 <button on:click={generateAudio}>Generate MP3</button>
