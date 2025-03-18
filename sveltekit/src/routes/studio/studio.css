@@ -1,0 +1,172 @@
+
+
+/* General Page Styles */
+main {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 1rem;
+  font-family: Arial, sans-serif;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Headings */
+h1, h2, h3 {
+  color: #7735cc;
+  
+}
+
+/* Forms */
+form {
+  background: #fff;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  border-radius: 6px;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+label {
+  /* font-weight: bold; */
+  display: block;
+  margin: 0.5rem 0 0.2rem;
+}
+
+input, textarea, select {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+textarea {
+  resize: vertical;
+  min-height: 60px;
+}
+
+button {
+  background: #7735cc;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  cursor: pointer;
+  font-size: 1rem;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+
+button.play {
+  background: #28a745;
+}
+button.play:hover {
+  background: #218838;
+}
+
+button:hover {
+  background: #5b1eab;
+}
+
+/* Episode Elements */
+.element {
+  background: white;
+  padding: 1rem;
+  margin: 1rem 0;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.element textarea {
+  min-height: 80px;
+}
+
+/* Audio Controls */
+audio {
+  width: 100%;
+  margin-top: 1rem;
+}
+
+.audio-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Move Up / Move Down Buttons */
+.move-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 0.5rem;
+}
+
+.move-buttons2 button {
+  background-color: #636363;
+  padding: 8px 12px;
+}
+
+.move-buttons button:last-child {
+  background-color: #dc3545;
+}
+
+.move-buttons button:hover {
+  opacity: 0.8;
+}
+
+/* Playlist Section */
+.audio-playlist {
+  padding: 1rem;
+  background: white;
+  margin-top: 1rem;
+  border-radius: 16px;
+  border: 8px dotted #6b20bd;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+  background: rgb(188, 170, 238);
+}
+
+.audio-playlist h3 {
+  margin-bottom: 0.5rem;
+}
+
+.audio-playlist button {
+  width: 100%;
+  background: #28a745;
+}
+
+.audio-playlist button:hover {
+  background: #218838;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 1200px) {
+  main {
+    width: 90%;
+    padding: 1rem;
+  }
+
+  button {
+    width: 100%;
+    text-align: center;
+  }
+
+  .move-buttons {
+    flex-direction: column;
+    gap: 5px;
+  }
+}
+
+.audioWrapper {
+  margin-top: 20px;
+  padding: 40px;
+  border-radius: 10px;
+  background: rgb(188, 170, 238);
+}
+
+.text-input {
+  color: #7735cc;
+}
+
+.developer-prompt {
+  color: rgb(0, 64, 255);
+}

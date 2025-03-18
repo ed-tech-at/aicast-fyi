@@ -11,6 +11,49 @@
   let title = data.episode.title || '';
   let desc = data.episode.desc || '';
 
+  let audioPlaylist = []; // Store audio filenames
+  let currentAudioIndex = 0;
+  let audioPlayer;
+
+    // Use an object to store audio in the correct order
+  let audioMap = {};
+
+    // When audio is loaded, store it in the correct order
+  function onAudioLoaded(position, filename) {
+    console.log('Audio loaded:', position, filename);
+    audioMap[position] = filename;
+    console.log('Audio audioMap:', audioMap);
+
+    // Once all elements are processed, rebuild the ordered playlist
+    audioPlaylist = Object.entries(audioMap)
+      .sort(([a], [b]) => Number(a) - Number(b)) // Sort by numeric position
+      .map(([_, filename]) => filename); // Extract filenames
+
+    console.log('Audio playlist:', audioPlaylist);
+  }
+
+
+  function playNextAudio() {
+    if (currentAudioIndex < audioPlaylist.length) {
+      audioPlayer.src = `/api/audio/${audioPlaylist[currentAudioIndex]}`;
+      audioPlayer.play();
+      currentAudioIndex++;
+    }
+  }
+
+  function startPlaylist() {
+    if (audioPlaylist.length > 0) {
+      currentAudioIndex = 0;
+      playNextAudio();
+    }
+  }
+
+  function handleAudioEnd() {
+    playNextAudio();
+  }
+
+
+
   async function updateEpisode(event: Event) {
     event.preventDefault();
 
@@ -165,8 +208,10 @@
 
 </script>
 
-<main>
-  <h1>Episode: {data.episodeId}</h1>
+<div>
+  <a href="/studio">Back to Studio</a>
+  <h1>Episode: {title}</h1>
+  <p>Episode ID: <code>{data.episodeId}</code></p>
 
   {#if data.episode}
     <form on:submit={updateEpisode}>
@@ -183,14 +228,23 @@
           <label for="updatedDate">Updated Date: {new Date(data.episode.updatedDate).toLocaleString()}</label>
         {/if}
         
-        <label for="email">Email:</label>
-        <span id="email">{data.episode.email}</span>
+        <label for="email">Email:
+        <span id="email">{data.episode.email}</span></label>
       </div>
 
       <button type="submit">Update</button>
     </form>
 
     <hr />
+
+
+  <div class="audio-playlist">
+    <h3>Audio Playlist</h3>
+    <button on:click={startPlaylist} class="play">Play All</button>
+    <audio bind:this={audioPlayer} on:ended={handleAudioEnd} controls></audio>
+  </div>
+
+  <hr />
     <h2>Elements</h2>
 
     <!-- <ul> -->
@@ -198,10 +252,16 @@
         <!-- <li> -->
           <!-- {episodeElement.createdDate} {episodeElement.type} {episodeElement.position} -->
 
-          <EpisodeElementRender element={episodeElement} episodeId={data.episodeId} elementSubmit={elementSubmit} />
+          <div class="element">
+            Position: {episodeElement.position}
+            <div class="move-buttons2">
 
-          <button on:click={() => moveElementUp(episodeElement.id)}>Move Up</button>
-          <button on:click={() => moveElementDown(episodeElement.id)}>Move Down</button>
+              <button on:click={() => moveElementUp(episodeElement.id)}>Move Up</button>
+              <button on:click={() => moveElementDown(episodeElement.id)}>Move Down</button>
+            </div>
+            <EpisodeElementRender element={episodeElement} episodeId={data.episodeId} elementSubmit={elementSubmit}  onAudioLoaded={onAudioLoaded}  />
+          </div>
+
         <!-- </li> -->
       {/each}
     <!-- </ul> -->
@@ -213,4 +273,6 @@
   {:else}
     <p>No episode found.</p>
   {/if}
-</main>
+
+
+</div>

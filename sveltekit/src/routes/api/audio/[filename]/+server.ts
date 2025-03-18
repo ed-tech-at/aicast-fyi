@@ -6,7 +6,7 @@ export async function GET({ params }) {
     const { filename } = params;
     const filePath = path.resolve('data/audio', filename);
 
-    console.log('accessing ', filePath);
+    // console.log('accessing ', filePath);
 
     // Überprüfen, ob die Datei existiert
     if (!fs.existsSync(filePath)) {

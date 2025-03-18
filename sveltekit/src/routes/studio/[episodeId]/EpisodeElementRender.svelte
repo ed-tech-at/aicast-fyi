@@ -1,9 +1,13 @@
 <script lang="ts">
+
+  import { onMount } from 'svelte';
+
   export let element;
   export let episodeId; // Added episodeId export
   export let elementSubmit;
 
-  
+  export let onAudioLoaded; // Callback to pass audio filenames up
+
 
   
   function handleElementSubmit(event: Event) {
@@ -31,6 +35,7 @@
       const result = await response.json();
       if (result.success) {
         audioElement = result.filename;
+        onAudioLoaded(element.position, audioElement); // Pass filename to parent
         // filename = result.filename;
       } else {
         audioElement = null;
@@ -59,6 +64,7 @@
       const result = await response.json();
       if (result.success) {
         audioElement = result.filename;
+        onAudioLoaded(element.position, audioElement); // Pass filename to parent
       } else {
         audioElement = 'Error generating audio: ' + result.error;
       }
@@ -94,7 +100,9 @@
     }
   }
 
-  checkAudioCache(); // Run when component loads
+  onMount(() => {
+    checkAudioCache();
+  });
 
 
 </script>
@@ -107,8 +115,8 @@
   }
 </style>
 
-<div class="element">
-  Position: {element.position}
+<div class="element2">
+  
   <form on:submit={handleElementSubmit}>
 
     <input type="hidden" name="id" bind:value={element.id} />
@@ -116,7 +124,7 @@
 
   {#if element.type === 'text'}
     <label>Text:</label><br>
-    <textarea bind:value={element.text} name="text"></textarea>
+    <textarea bind:value={element.text} name="text" class="text-input"></textarea>
     
 
     
@@ -125,21 +133,21 @@
     {:else if element.type === 'ai'}
 
     <label>Developer Prompt</label>
-    <textarea bind:value={element.developerPrompt} name="developerPrompt"></textarea>
+    <textarea bind:value={element.developerPrompt} name="developerPrompt" class="developer-prompt"></textarea>
     <br>
     <label>User Question</label>
-    <textarea bind:value={element.userQuestion} name="userQuestion"></textarea>
+    <textarea bind:value={element.userQuestion} name="userQuestion" ></textarea>
     <br>
 
     <label>User Demo Input</label>
-    <textarea bind:value={userDemoInput} name="userDemoInput"></textarea>
+    <textarea bind:value={userDemoInput} name="userDemoInput" style="color: #329aa1;"></textarea>
     <br>
 
-    <button on:click={generateLLMResponseBtn}>Generate LLM Response</button>
+    <button on:click={generateLLMResponseBtn} style="background-color: #329aa1;">Generate LLM Response</button>
 
 
     <label>Text:</label><br>
-    <textarea bind:value={element.text} name="text"></textarea>
+    <textarea bind:value={element.text} name="text" class="text-input" ></textarea>
 
     {/if}
 
@@ -154,8 +162,12 @@
 
   <button type="submit">Save</button>
 
+  <div class="audioWrapper">
 
   {#if audioElement}
+
+    
+
     Audio: {audioElement}
      <audio controls>
       <source src={`/api/audio/${audioElement}`} type="audio/mp3">
@@ -165,6 +177,7 @@
     <p>No audio available.</p>
     <button on:click={generateAudio}>Generate Audio</button>
   {/if}
+</div>
 
 
 </form>

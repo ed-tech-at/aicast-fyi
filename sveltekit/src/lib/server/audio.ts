@@ -5,7 +5,7 @@ import path from 'path';
 const prisma = new PrismaClient(); // Initialize Prisma Client
 const AUDIO_DIR = path.join(process.cwd(), 'data', 'audio'); // Directory for storing MP3s
 
-console.log("Current working directory:", process.cwd());
+// console.log("Current working directory:", process.cwd());
 
 
 import {newAudioUUID} from './utils';
@@ -47,9 +47,9 @@ export async function generateAudio(
 
         if (existingAudio) {
             const existingAudioPath = path.join(AUDIO_DIR, `${existingAudio.id}.mp3`);
-            console.log(`1. Returning existing audio file: ${existingAudioPath}`);
+            // console.log(`1. Returning existing audio file: ${existingAudioPath}`);
             if (fs.existsSync(existingAudioPath)) {
-                console.log(`2. Returning existing audio file: ${existingAudioPath}`);
+                console.log(`Returning existing audio file: ${existingAudioPath}`);
                 return {filename: `${existingAudio.id}.mp3`, cached: true}; // Return the existing file
             }
 

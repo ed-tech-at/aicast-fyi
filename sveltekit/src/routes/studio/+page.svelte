@@ -50,6 +50,10 @@
       if (data.success) {
           lookupResult = data.episode;
           lookupMessage = "";
+
+          createdEpisodes = [...createdEpisodes, data.episode];
+          localStorage.setItem('createdEpisodes', JSON.stringify(createdEpisodes));
+
       } else {
           lookupMessage = `Error: ${data.error}`;
           lookupResult = null;
@@ -57,8 +61,8 @@
   }
 </script>
 
-<h2>Create New Episode</h2>
-<input type="email" bind:value={email} placeholder="Enter email" />
+<h1>Create New Episode</h1>
+<input type="email" bind:value={email} placeholder="Enter email" required />
 <button on:click={createEpisode}>Create Episode</button>
 <p>{createMessage}</p>
 
