@@ -6,42 +6,51 @@
 
   export let data: { audios: Audio[]; date: string };
 
-
-  async function fetchVoices() {
+  onMount(async () => {
     try {
-      const response = await fetch('https://api.elevenlabs.io/v1/voices', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'xi-api-key': import.meta.env.VITE_ELEVENLABS_API_KEY
-        }
+      const response = await fetch('/admin/elevenlabs', { 
+        method: "POST",
+        body: JSON.stringify({
+              // formData,
+              action: 'voicesList' 
+          }),
       });
-
-      const result = await response.json();
-      voices = result.voices || []; // Store voices list
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const responseData = await response.json();
+      console.log(responseData.voices);
+      voices = responseData.voices;
     } catch (error) {
       console.error('Error fetching voices:', error);
     }
-  }
-
-  onMount(() => {
-    fetchVoices();
   });
+
+
 
 
 
   async function generateAudio() {
     try {
+
+      const formData = {
+          // text: "Wilkommen beim AI cast.",
+          // voiceId: "pqHfZKP75CvOlQylNhV4" // Replace with actual voice ID
+          voiceId: "NBqeXKdZHweef6y0B67V", // Replace with actual voice ID
+          text: "Wilkommen beim AI cast.",
+
+        };
+
       const response = await fetch('/admin/elevenlabs', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
+        
         body: JSON.stringify({
-          text: "Wilkommen beim AI cast.",
-          
+          action: 'generateAudio',
+          formData
           // voiceId: "pqHfZKP75CvOlQylNhV4" // Replace with actual voice ID
-          voiceId: "NBqeXKdZHweef6y0B67V" // Replace with actual voice ID
         })
       });
 

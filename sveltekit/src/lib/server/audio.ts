@@ -7,6 +7,7 @@ const AUDIO_DIR = path.join(process.cwd(), 'data', 'audio'); // Directory for st
 
 // console.log("Current working directory:", process.cwd());
 
+import { env } from '$env/dynamic/private';
 
 import {newAudioUUID} from './utils';
 
@@ -100,7 +101,7 @@ export async function generateAndSaveAudio(
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'xi-api-key': import.meta.env.VITE_ELEVENLABS_API_KEY
+                'xi-api-key': env.ELEVENLABS_API_KEY
             },
             body: JSON.stringify({
                 text: text,

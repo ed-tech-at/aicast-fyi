@@ -1,10 +1,12 @@
 import { PrismaClient } from '@prisma/client';
 import OpenAI from 'openai';
 
+import { env } from '$env/dynamic/private'; // Ensure you have the correct path to your environment variables
+
 const prisma = new PrismaClient(); // Initialize Prisma Client
 
 const openai = new OpenAI({
-    apiKey: import.meta.env.VITE_OPENAI_API_KEY, // Ensure your API key is stored in .env
+    apiKey: env.OPENAI_API_KEY, // Ensure your API key is stored in .env
 });
 
 /**

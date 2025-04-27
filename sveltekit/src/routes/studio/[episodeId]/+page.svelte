@@ -242,7 +242,15 @@
     <h3>Audio Playlist</h3>
     <button on:click={startPlaylist} class="play">Play All</button>
     <audio bind:this={audioPlayer} on:ended={handleAudioEnd} controls></audio>
+
+<!-- 
+    {#each audioPlaylist as audioFile}
+
+      <div>{audioFile}</div>
+    {/each} -->
+  
   </div>
+
 
   <hr />
     <h2>Elements</h2>

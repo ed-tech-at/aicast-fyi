@@ -17,6 +17,7 @@ export async function GET({ params }) {
         headers: {
             'Content-Type': 'audio/mpeg', // Falls MP3, passe den Typ für andere Formate an
             'Content-Disposition': `inline; filename="${filename}"`, // Optional
+            'Cache-Control': 'public, max-age=2592000' // Cache for 30 days (30 * 24 * 60 * 60 seconds)
         }
     });
 }
