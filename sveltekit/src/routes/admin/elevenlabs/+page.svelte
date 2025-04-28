@@ -75,7 +75,7 @@
 
 
   function loadPlayer(sender, audioId) {
-        const player = document.getElementById(`player-${audioId}`);
+        const player = document.getSegmentById(`player-${audioId}`);
         if (player) {
           player.style.display = 'block';
         }
@@ -87,7 +87,7 @@
 
 <h1>Admin </h1>
 
-<a href="/admin/episode">Episodes</a>
+<a href="/admin/track">Tracks</a>
 
 
 {#each data.audios as audio}
@@ -98,7 +98,7 @@
     <button on:click={(event) => loadPlayer(event.currentTarget, audio.id)}>Load Player</button>
     <audio id={`player-${audio.id}`} controls style="display: none;">
       <source src={`/api/audio/${audio.id}.mp3`} type="audio/mpeg" />
-      Your browser does not support the audio element.
+      Your browser does not support the audio segment.
     </audio>
     </p>
    

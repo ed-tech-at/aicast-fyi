@@ -2,20 +2,20 @@
 
   import { onMount } from 'svelte';
 
-  export let element;
-  export let episodeId; // Added episodeId export
-  export let elementSubmit;
+  export let segment;
+  export let trackId; // Added trackId export
+  export let segmentSubmit;
 
   export let onAudioLoaded; // Callback to pass audio filenames up
 
 
   
-  function handleElementSubmit(event: Event) {
-    elementSubmit(event); // Call the passed function
+  function handleSegmentSubmit(event: Event) {
+    segmentSubmit(event); // Call the passed function
     checkAudioCache(); // Check for audio cache after submitting
   }
 
-  let audioElement = "";
+  let audioSegment = "";
   let userDemoInput = "";
 
 
@@ -23,80 +23,80 @@
 
   async function checkAudioCache() {
     try {
-      const response = await fetch('/studio/' + episodeId , {
+      const response = await fetch('/studio/' + trackId , {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           action: "checkAudioGenerated",
-          form: JSON.stringify({ text: element.text, voiceId: voiceId, elementId: element.id })
+          form: JSON.stringify({ text: segment.text, voiceId: voiceId, segmentId: segment.id })
         })
       });
 
       const result = await response.json();
       if (result.success) {
-        audioElement = result.filename;
-        onAudioLoaded(element.position, audioElement); // Pass filename to parent
+        audioSegment = result.filename;
+        onAudioLoaded(segment.position, audioSegment); // Pass filename to parent
         // filename = result.filename;
       } else {
-        audioElement = null;
+        audioSegment = null;
         
       }
     } catch (error) {
       console.error('Error checking audio cache:', error);
-      audioElement = 'Error checking audio cache: ' + error.message;
-      audioElement = null;
+      audioSegment = 'Error checking audio cache: ' + error.message;
+      audioSegment = null;
     }
   }
 
   async function generateAudio() {
     try {
-      const response = await fetch('/studio/' + episodeId, {
+      const response = await fetch('/studio/' + trackId, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          form: JSON.stringify({ text: element.text, voiceId: voiceId, elementId: element.id }),
+          form: JSON.stringify({ text: segment.text, voiceId: voiceId, segmentId: segment.id }),
           action: 'generateAudio'
         })
       });
 
       const result = await response.json();
       if (result.success) {
-        audioElement = result.filename;
-        onAudioLoaded(element.position, audioElement); // Pass filename to parent
+        audioSegment = result.filename;
+        onAudioLoaded(segment.position, audioSegment); // Pass filename to parent
       } else {
-        audioElement = 'Error generating audio: ' + result.error;
+        audioSegment = 'Error generating audio: ' + result.error;
       }
     } catch (error) {
       console.error('Error generating audio:', error);
-      audioElement = 'Error generating audio: ' + error.message;
+      audioSegment = 'Error generating audio: ' + error.message;
     }
   }
   
   async function generateLLMResponseBtn() {
     try {
-      element.text = 'Generating LLM response...';
-      const response = await fetch('/studio/' + episodeId, {
+      segment.text = 'Generating LLM response...';
+      const response = await fetch('/studio/' + trackId, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          form: JSON.stringify({ developerPrompt: element.developerPrompt, userDemoInput: userDemoInput, elementId: element.id }), 
+          form: JSON.stringify({ developerPrompt: segment.developerPrompt, userDemoInput: userDemoInput, segmentId: segment.id }), 
           action: 'generateLLMResponse'
         })
       });
 
       const result = await response.json();
       if (result.success) {
-        element.text = result.response;
+        segment.text = result.response;
       } else {
-        element.text = 'Error generating LLM response: ' + result.error;
+        segment.text = 'Error generating LLM response: ' + result.error;
       }
     } catch (error) {
       console.error('Error generating LLM response:', error);
-      audioElement = 'Error generating LLM response: ' + error.message;
+      audioSegment = 'Error generating LLM response: ' + error.message;
     }
   }
 
@@ -108,35 +108,35 @@
 </script>
 
 <style>
-  .element {
+  .segment {
     margin: 1rem 0;
     padding: 1rem;
     border: 1px solid #ccc;
   }
 </style>
 
-<div class="element2">
+<div class="segment2">
   
-  <form on:submit={handleElementSubmit}>
+  <form on:submit={handleSegmentSubmit}>
 
-    <input type="hidden" name="id" bind:value={element.id} />
+    <input type="hidden" name="id" bind:value={segment.id} />
 
 
-  {#if element.type === 'text'}
+  {#if segment.type === 'text'}
     <label>Text:</label><br>
-    <textarea bind:value={element.text} name="text" class="text-input"></textarea>
+    <textarea bind:value={segment.text} name="text" class="text-input"></textarea>
     
 
     
 
 
-    {:else if element.type === 'ai'}
+    {:else if segment.type === 'ai'}
 
     <label>Developer Prompt</label>
-    <textarea bind:value={element.developerPrompt} name="developerPrompt" class="developer-prompt"></textarea>
+    <textarea bind:value={segment.developerPrompt} name="developerPrompt" class="developer-prompt"></textarea>
     <br>
     <label>User Question</label>
-    <textarea bind:value={element.userQuestion} name="userQuestion" ></textarea>
+    <textarea bind:value={segment.userQuestion} name="userQuestion" ></textarea>
     <br>
 
     <label>User Demo Input</label>
@@ -147,7 +147,7 @@
 
 
     <label>Text:</label><br>
-    <textarea bind:value={element.text} name="text" class="text-input" ></textarea>
+    <textarea bind:value={segment.text} name="text" class="text-input" ></textarea>
 
     {/if}
 
@@ -155,7 +155,7 @@
 
   <label for="type">Type:</label>
 
-  <select name="type" bind:value={element.type}>
+  <select name="type" bind:value={segment.type}>
     <option value="text">Text</option>
     <option value="ai">AI</option>
   </select>
@@ -164,16 +164,16 @@
 
   <div class="audioWrapper">
 
-  {#if audioElement}
+  {#if audioSegment}
 
     
 
-    Audio: {audioElement}
+    Audio: {audioSegment}
      <audio controls>
-      <source src={`/api/audio/${audioElement}`} type="audio/mp3">
-      Your browser does not support the audio element.
+      <source src={`/api/audio/${audioSegment}`} type="audio/mp3">
+      Your browser does not support the audio segment.
     </audio>
-  {:else if audioElement === null}
+  {:else if audioSegment === null}
     <p>No audio available.</p>
     <button on:click={generateAudio}>Generate Audio</button>
   {/if}

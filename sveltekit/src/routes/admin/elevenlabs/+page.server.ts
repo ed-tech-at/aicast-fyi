@@ -7,7 +7,7 @@ import type { PageServerLoad, Actions } from './$types';
 const prisma = new PrismaClient();
 
 export const load: PageServerLoad = async ({ params }) => {
-  const episodeId = params.episodeId;
+  const trackId = params.trackId;
 
   const audios = await prisma.audio.findMany({
     orderBy: { createdDate: 'desc' }

@@ -1,7 +1,7 @@
 import { json } from '@sveltejs/kit';
 import { PrismaClient } from '@prisma/client';
 
-import { newEpisodeElementUUID, getMaxPosition, spaceElementPositionForEpisode } from '$lib/server/utils';
+import { newSegmentUUID, getMaxPosition, spaceSegmentPositionForTrack } from '$lib/server/utils';
 import { get } from 'svelte/store';
 
 import fs from 'fs';
@@ -15,14 +15,14 @@ const prisma = new PrismaClient();
 export async function POST({ request, params }) {
     try {
         console.log('params', params);
-        let { form, action, elementId } = await request.json();
+        let { form, action, segmentId } = await request.json();
         console.log('action', action);
         
         if (typeof form === 'string') {
             form = JSON.parse(form);
         }
 
-        const episodeId = params.episodeId;
+        const trackId = params.trackId;
 
         console.log('form', form);
 
@@ -34,8 +34,8 @@ export async function POST({ request, params }) {
                 // return json({ success: false, error: 'Title and Description are required' }, { status: 400 });
             // }
 
-            const updatedEpisode = await prisma.episode.update({
-                where: { id: episodeId },
+            const updatedTrack = await prisma.track.update({
+                where: { id: trackId },
                 data: {
                     title: form.title,
                     desc: form.desc,
@@ -43,19 +43,19 @@ export async function POST({ request, params }) {
                 },
             });
 
-            return json({ success: true, episode: updatedEpisode });
+            return json({ success: true, track: updatedTrack });
 
         }
-        if (action == "updateElement") {
-            console.log('update element', form.elementId);
-            const elementId = form.elementId;
+        if (action == "updateSegment") {
+            console.log('update segment', form.segmentId);
+            const segmentId = form.segmentId;
 
             // if (!title || !desc) {
                 // return json({ success: false, error: 'Title and Description are required' }, { status: 400 });
             // }
             
-            const updatedElement = await prisma.episodeElement.update({
-                where: { id: elementId },
+            const updatedSegment = await prisma.segment.update({
+                where: { id: segmentId },
                 data: {
                     text: form.text,
                     userQuestion: form.userQuestion,
@@ -64,23 +64,23 @@ export async function POST({ request, params }) {
                 },
             });
 
-            const updatedElements = await prisma.episodeElement.findMany({
-                where: { f_episodeId: episodeId },
+            const updatedSegments = await prisma.segment.findMany({
+                where: { f_trackId: trackId },
                 orderBy: { position: 'asc' }
             });
     
-            return json({ success: true, episodeElements: updatedElements });
+            return json({ success: true, segments: updatedSegments });
 
-        } else if (action == 'createElement') {
-        console.log('createElement!');
+        } else if (action == 'createSegment') {
+        console.log('createSegment!');
 
-        const position = await getMaxPosition(episodeId) + 10;
+        const position = await getMaxPosition(trackId) + 10;
 
-        const uuid = await newEpisodeElementUUID();
+        const uuid = await newSegmentUUID();
 
-        const newElement = await prisma.episodeElement.create({
+        const newSegment = await prisma.segment.create({
             data: {
-                f_episodeId: episodeId,
+                f_trackId: trackId,
                 id: uuid,
                 createdDate: new Date(),
                 position: position,
@@ -88,26 +88,26 @@ export async function POST({ request, params }) {
             }
         });
 
-        console.log('newElement', newElement);
+        console.log('newSegment', newSegment);
 
-        // / Fetch updated elements
-        const updatedElements = await prisma.episodeElement.findMany({
-            where: { f_episodeId: episodeId },
+        // / Fetch updated segments
+        const updatedSegments = await prisma.segment.findMany({
+            where: { f_trackId: trackId },
             orderBy: { position: 'asc' }
         });
 
-        return json({ success: true, episodeElements: updatedElements });
+        return json({ success: true, segments: updatedSegments });
 
 
       } else if (action == "moveDown") {
 
 
         
-        console.log('elementId::', elementId);
-        const episodeId = params.episodeId;
+        console.log('segmentId::', segmentId);
+        const trackId = params.trackId;
 
-        const element = await prisma.episodeElement.update({
-            where: { id: elementId },
+        const segment = await prisma.segment.update({
+            where: { id: segmentId },
             data: {
                 position: { increment: 15 }
             }
@@ -115,25 +115,25 @@ export async function POST({ request, params }) {
         
 
 
-        await spaceElementPositionForEpisode(episodeId);
+        await spaceSegmentPositionForTrack(trackId);
 
-         // / Fetch updated elements
-        const updatedElements = await prisma.episodeElement.findMany({
-            where: { f_episodeId: episodeId },
+         // / Fetch updated segments
+        const updatedSegments = await prisma.segment.findMany({
+            where: { f_trackId: trackId },
             orderBy: { position: 'asc' }
         });
 
-        return json({ success: true, elements: updatedElements });
+        return json({ success: true, segments: updatedSegments });
 
       } else if (action == "moveUp") {
 
 
         
-        console.log('elementId::', elementId);
-        const episodeId = params.episodeId;
+        console.log('segmentId::', segmentId);
+        const trackId = params.trackId;
 
-        const element = await prisma.episodeElement.update({
-            where: { id: elementId },
+        const segment = await prisma.segment.update({
+            where: { id: segmentId },
             data: {
                 position: { decrement: 15 }
             }
@@ -141,15 +141,15 @@ export async function POST({ request, params }) {
         
 
 
-        await spaceElementPositionForEpisode(episodeId);
+        await spaceSegmentPositionForTrack(trackId);
 
-         // / Fetch updated elements
-        const updatedElements = await prisma.episodeElement.findMany({
-            where: { f_episodeId: episodeId },
+         // / Fetch updated segments
+        const updatedSegments = await prisma.segment.findMany({
+            where: { f_trackId: trackId },
             orderBy: { position: 'asc' }
         });
 
-        return json({ success: true, elements: updatedElements });
+        return json({ success: true, segments: updatedSegments });
 
       } else if (action === "checkAudioGenerated") {
         console.log('Checking audio cache for text:', form.text);
@@ -178,21 +178,21 @@ export async function POST({ request, params }) {
         }
          else {
             // console.log('Audio not found, generating new audio...');
-            // const generatedAudioFilename = await generateAudio(form.text, form.voiceId, form.elementId);
+            // const generatedAudioFilename = await generateAudio(form.text, form.voiceId, form.segmentId);
             // return json({ success: true, cached: false, filename: generatedAudioFilename });
             return json({ success: false, cached: false, filename: null });
         }
     } else if (action === "generateAudio") {
 
             console.log('Audio not found, generating new audio...');
-            const { filename, cached } = await generateAudio(form.text, form.voiceId, form.elementId);
+            const { filename, cached } = await generateAudio(form.text, form.voiceId, form.segmentId);
             return json({ success: true, cached: cached, filename: filename });
         
      } else if (action === "generateLLMResponse") {
 
             console.log('Generating LLM response... for dev' + form.developerPrompt);
             
-            const { response } = await generateLLMResponse(form.developerPrompt, form.userDemoInput, form.elementId);
+            const { response } = await generateLLMResponse(form.developerPrompt, form.userDemoInput, form.segmentId);
             return json({ success: true, response: response });
         
      }

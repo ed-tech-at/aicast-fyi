@@ -4,25 +4,25 @@ import { v4 as uuidv4 } from 'uuid';
 
 const prisma = new PrismaClient();
 
-export async function newEpisodeUUID() {
+export async function newTrackUUID() {
   let uuid;
   let exists = true;
 
   while (exists) {
     uuid = uuidv4();
-    const existing = await prisma.episode.findUnique({ where: { id: uuid } });
+    const existing = await prisma.track.findUnique({ where: { id: uuid } });
     if (!existing) exists = false;
   }
   return uuid;
 }
 
-export async function newEpisodeElementUUID() {
+export async function newSegmentUUID() {
   let uuid;
   let exists = true;
 
   while (exists) {
     uuid = uuidv4();
-    const existing = await prisma.episodeElement.findUnique({ where: { id: uuid } });
+    const existing = await prisma.segment.findUnique({ where: { id: uuid } });
     if (!existing) exists = false;
   }
   return uuid;
@@ -41,27 +41,27 @@ export async function newAudioUUID() {
 }
 
 
-export async function getMaxPosition(episodeId : string) {
-  const maxPosition = await prisma.episodeElement.findFirst({
-    where: { f_episodeId: episodeId },
+export async function getMaxPosition(trackId : string) {
+  const maxPosition = await prisma.segment.findFirst({
+    where: { f_trackId: trackId },
     orderBy: { position: 'desc' },
   });
   return maxPosition ? maxPosition.position : 0;
 }
 
 
-export async function spaceElementPositionForEpisode(episodeId : string) {
+export async function spaceSegmentPositionForTrack(trackId : string) {
   
-  const elements = await prisma.episodeElement.findMany({
-    where: { f_episodeId: episodeId },
+  const segments = await prisma.segment.findMany({
+    where: { f_trackId: trackId },
     orderBy: { position: 'asc' },
   });
 
   let position = 0;
-  for (const element of elements) {
+  for (const segment of segments) {
     position += 10;
-    await prisma.episodeElement.update({
-      where: { id: element.id },
+    await prisma.segment.update({
+      where: { id: segment.id },
       data: { position },
     });
   }

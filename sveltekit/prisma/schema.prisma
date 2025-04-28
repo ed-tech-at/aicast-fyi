@@ -16,51 +16,106 @@ datasource db {
 
 
 model ApiKey {
-  apiId           Int      @id @default(autoincrement())
-  apiType         String?
-  apiKey          String?   @db.VarChar(255)
-  apiPlaceholder  String?   @db.VarChar(255)
+  id           Int      @id @default(autoincrement())
+  endpoint     String?
+  key          String?  
+  shortcode  String?  
+  mailRegex  String?  
+
+  createdDate  DateTime @default(now())
+  
 }
 
-model Episode {
+model Track {
   id           String   @id @default(uuid())
-  episodeUrl   String?   @unique @db.VarChar(255)
+  createdDate  DateTime @default(now())
+
   email        String
+  hashedPw     String?
+
+
+  URL          String?  
+
   title        String?
   desc         String?
-  apiKeyLLM    String?
-  apiKeyAudio  String?
-  createdDate  DateTime @default(now())
+  
+  apiKeyLLM  ApiKey? @relation(fields: [apiKeyLLMId], references: [id], onDelete: SetNull)
+  apiKeyLLMId  Int?
+
+  apiKeyAudio  ApiKey? @relation(fields: [apiKeyLLMId], references: [id], onDelete: SetNull)
+  apiKeyAudioId  Int?
+
   updatedDate  DateTime?
+  
+  visibility   Int  @default(1) // 1... Public, 2... Shared Secret in accessCode, 3... JSON String Array in accessCode
+  accessCode  String?
+
+  recycleLLM  Int  @default(1)
+  
 }
 
-model EpisodeElement {
+
+model Episode {
   id             String   @id @default(uuid())
   createdDate    DateTime @default(now())
+  
+  track Track @relation(fields: [trackId], references: [id], onDelete: Cascade)
+  trackId    String
+
+  studentName  String?
+
+  answers String?
+  
+}
+
+model Segment {
+  id             String   @id @default(uuid())
+  createdDate    DateTime @default(now())
+
+  track Track @relation(fields: [trackId], references: [id], onDelete: Cascade)
+  trackId    String
+
   type           String
+  
   text           String?
-  userQuestion   String?
-  developerPrompt   String?
-  f_episodeId    String
-  position       Int
+
+  studentQuestion  String?
+  systemPrompt    String?
+  defaultAnswer   String?
+
+
+  position       Int @default(10)
+
+  //audioVersion   Int?
 }
 
 model Audio {
   id           String   @id @default(uuid())
   createdDate  DateTime @default(now())
-  f_elementId  String
-  voice_id     String
+  
+  segment  Segment? @relation(fields: [segmentId], references: [id], onDelete: SetNull)
+  segmentId  String?
+  
+  voice     String
   text         String?
-  language_code String
+  
+  language_code String?
+  previousText String?
+  nextText String?
+
+  //version   Int?
 }
 
 model LLMGeneratedText {
   id              String   @id @default(uuid())
   createdDate     DateTime @default(now())
-  f_elementId     String
-  developerPrompt String?
-  prompt          String?
+  
+  segment  Segment @relation(fields: [segmentId], references: [id], onDelete: Cascade)
+  segmentId  String
+
+  studentAnswer          String?
   result          String?
+  
 }
 
 

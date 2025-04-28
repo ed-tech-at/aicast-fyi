@@ -1,15 +1,15 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { invalidate } from '$app/navigation';
-  // import { renderEpisodeElementBackend } from '$lib/utils';
-  import EpisodeElementRender from './EpisodeElementRender.svelte';
+  // import { renderSegmentBackend } from '$lib/utils';
+  import SegmentRender from './SegmentRender.svelte';
   
-  import type { Episode, EpisodeElement } from '@prisma/client';
+  import type { Track, Segment } from '@prisma/client';
 
-  export let data: { episodeId: string; episode: Episode; episodeElements: EpisodeElement[]; date: string };
+  export let data: { trackId: string; track: Track; segments: Segment[]; date: string };
 
-  let title = data.episode.title || '';
-  let desc = data.episode.desc || '';
+  let title = data.track.title || '';
+  let desc = data.track.desc || '';
 
   let audioPlaylist = []; // Store audio filenames
   let currentAudioIndex = 0;
@@ -24,7 +24,7 @@
     audioMap[position] = filename;
     console.log('Audio audioMap:', audioMap);
 
-    // Once all elements are processed, rebuild the ordered playlist
+    // Once all segments are processed, rebuild the ordered playlist
     audioPlaylist = Object.entries(audioMap)
       .sort(([a], [b]) => Number(a) - Number(b)) // Sort by numeric position
       .map(([_, filename]) => filename); // Extract filenames
@@ -54,10 +54,10 @@
 
 
 
-  async function updateEpisode(event: Event) {
+  async function updateTrack(event: Event) {
     event.preventDefault();
 
-    const response = await fetch(`/studio/${data.episodeId}`, {
+    const response = await fetch(`/studio/${data.trackId}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -72,24 +72,24 @@
     
     if (result.success) {
       
-      console.log('Episode updated successfully:', result);
+      console.log('Track updated successfully:', result);
 
-      data.episode = result.episode;
+      data.track = result.track;
 
     } else {
-      console.error('Error updating episode:', result.error);
+      console.error('Error updating track:', result.error);
     }
   }
   
   
-  async function elementSubmit(event: Event) {
+  async function segmentSubmit(event: Event) {
     
     event.preventDefault();
-    const form = event.target as HTMLFormElement;
+    const form = event.target as HTMLFormSegment;
     const formData = new FormData(form);
 
-    // Extract the element ID and text
-    const elementId = formData.get("id") as string;
+    // Extract the segment ID and text
+    const segmentId = formData.get("id") as string;
     const text = formData.get("text") as string;
     const userQuestion = formData.get("userQuestion") as string; // Change this line to correctly get the user input
     const type = formData.get("type") as string; // Change this line to correctly get the user input
@@ -98,20 +98,20 @@
 
     console.log("Form Data:", formData);
 
-    console.log("Element ID:", elementId);
+    console.log("Segment ID:", segmentId);
     console.log("Text:", text);
     console.log("User Question:", userQuestion); // Log userQuestion for debugging
     console.log("Type:", type); // Log type for debugging
     
 
-    const response = await fetch(`/studio/${data.episodeId}`, {
+    const response = await fetch(`/studio/${data.trackId}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        form: JSON.stringify({ text, userQuestion, developerPrompt, type, elementId }),
-        action: 'updateElement'
+        form: JSON.stringify({ text, userQuestion, developerPrompt, type, segmentId }),
+        action: 'updateSegment'
       }),
     });
 
@@ -119,90 +119,90 @@
     
     if (result.success) {
       
-      console.log('Element updated successfully:', result);
+      console.log('Segment updated successfully:', result);
 
-      data.episodeElements = result.episodeElements; // Update episode elements
+      data.segments = result.segments; // Update track segments
 
     } else {
-      console.error('Error updating element:', result.error); // Update error message
+      console.error('Error updating segment:', result.error); // Update error message
     }
   }
 
-  async function createElement(event: Event) {
+  async function createSegment(event: Event) {
     event.preventDefault();
 
-    const response = await fetch(`/studio/${data.episodeId}`, {
+    const response = await fetch(`/studio/${data.trackId}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        action: 'createElement',
+        action: 'createSegment',
       }),
     });
 
     const result = await response.json();
     
     if (result.success) {
-      data.episodeElements = result.episodeElements;
+      data.segments = result.segments;
 
-      console.log('Element created successfully:', result.episodeElements);
+      console.log('Segment created successfully:', result.segments);
     } else {
-      console.error('Error creating element:', result.error);
+      console.error('Error creating segment:', result.error);
     }
   }
 
 
   console.log('data:', data);
 
-  async function moveElementDown(elementId: string) {
-    // Logic for moving the element down will be implemented here.
-    console.log('Moving element down:', elementId);
+  async function moveSegmentDown(segmentId: string) {
+    // Logic for moving the segment down will be implemented here.
+    console.log('Moving segment down:', segmentId);
   
-    const response = await fetch(`/studio/${data.episodeId}`, {
+    const response = await fetch(`/studio/${data.trackId}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         action: 'moveDown',
-        elementId,
+        segmentId,
       }),
     });
 
     const result = await response.json();
 
     if (result.success) {
-      data.episodeElements = result.elements;
-      console.log('Elements updated successfully:', result);
+      data.segments = result.segments;
+      console.log('Segments updated successfully:', result);
     } else {
-      console.error('Error moving element down:', result.error);
+      console.error('Error moving segment down:', result.error);
     }
   }
 
 
-  async function moveElementUp(elementId: string) {
-    // Logic for moving the element up will be implemented here.
-    console.log('Moving element up:', elementId);
+  async function moveSegmentUp(segmentId: string) {
+    // Logic for moving the segment up will be implemented here.
+    console.log('Moving segment up:', segmentId);
   
-    const response = await fetch(`/studio/${data.episodeId}`, {
+    const response = await fetch(`/studio/${data.trackId}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         action: 'moveUp',
-        elementId,
+        segmentId,
       }),
     });
 
     const result = await response.json();
 
     if (result.success) {
-      data.episodeElements = result.elements;
-      console.log('Elements updated successfully:', result);
+      data.segments = result.segments;
+      console.log('Segments updated successfully:', result);
     } else {
-      console.error('Error moving element down:', result.error);
+      console.error('Error moving segment down:', result.error);
     }
   }
 
@@ -210,26 +210,26 @@
 
 <div>
   <a href="/studio">Back to Studio</a>
-  <h1>Episode: {title}</h1>
-  <p>Episode ID: <code>{data.episodeId}</code></p>
+  <h1>Track: {title}</h1>
+  <p>Track ID: <code>{data.trackId}</code></p>
 
-  {#if data.episode}
-    <form on:submit={updateEpisode}>
+  {#if data.track}
+    <form on:submit={updateTrack}>
       <div>
 
         <label for="title">Title:</label>
-        <input type="text" id="title" name="title" bind:value={title} placeholder="Untitled Episode" />
+        <input type="text" id="title" name="title" bind:value={title} placeholder="Untitled Track" />
 
         <label for="desc">Description:</label>
         <textarea id="desc" name="desc" bind:value={desc} placeholder="No description available"></textarea>
 
-        <label for="createdDate">Created Date: {new Date(data.episode.createdDate).toLocaleString()}</label>
-        {#if data.episode.updatedDate}
-          <label for="updatedDate">Updated Date: {new Date(data.episode.updatedDate).toLocaleString()}</label>
+        <label for="createdDate">Created Date: {new Date(data.track.createdDate).toLocaleString()}</label>
+        {#if data.track.updatedDate}
+          <label for="updatedDate">Updated Date: {new Date(data.track.updatedDate).toLocaleString()}</label>
         {/if}
         
         <label for="email">Email:
-        <span id="email">{data.episode.email}</span></label>
+        <span id="email">{data.track.email}</span></label>
       </div>
 
       <button type="submit">Update</button>
@@ -253,21 +253,21 @@
 
 
   <hr />
-    <h2>Elements</h2>
+    <h2>Segments</h2>
 
     <!-- <ul> -->
-      {#each data.episodeElements as episodeElement}
+      {#each data.segments as segment}
         <!-- <li> -->
-          <!-- {episodeElement.createdDate} {episodeElement.type} {episodeElement.position} -->
+          <!-- {segment.createdDate} {segment.type} {segment.position} -->
 
-          <div class="element">
-            Position: {episodeElement.position}
+          <div class="segment">
+            Position: {segment.position}
             <div class="move-buttons2">
 
-              <button on:click={() => moveElementUp(episodeElement.id)}>Move Up</button>
-              <button on:click={() => moveElementDown(episodeElement.id)}>Move Down</button>
+              <button on:click={() => moveSegmentUp(segment.id)}>Move Up</button>
+              <button on:click={() => moveSegmentDown(segment.id)}>Move Down</button>
             </div>
-            <EpisodeElementRender element={episodeElement} episodeId={data.episodeId} elementSubmit={elementSubmit}  onAudioLoaded={onAudioLoaded}  />
+            <SegmentRender segment={segment} trackId={data.trackId} segmentSubmit={segmentSubmit}  onAudioLoaded={onAudioLoaded}  />
           </div>
 
         <!-- </li> -->
@@ -275,11 +275,11 @@
     <!-- </ul> -->
 
 
-    <button on:click={createElement}>Create Element</button>
+    <button on:click={createSegment}>Create Segment</button>
 
 
   {:else}
-    <p>No episode found.</p>
+    <p>No track found.</p>
   {/if}
 
 

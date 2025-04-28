@@ -1,26 +1,26 @@
 
-// import type { Episode, EpisodeElement } from '@prisma/client';
+// import type { Track, Segment } from '@prisma/client';
 
 
-// export function renderEpisodeElementBackend(element: EpisodeElement) {
+// export function renderSegmentBackend(segment: Segment) {
   
-//   const prefix = 'element';
+//   const prefix = 'segment';
   
-//   if (element.type === 'text') {
-//     return `<form on:submit={elementSubmit}>
+//   if (segment.type === 'text') {
+//     return `<form on:submit={segmentSubmit}>
     
 //       ${prefix}
 
 //     Text:
 
-//     <textarea bind:value={element.text}></textarea>
+//     <textarea bind:value={segment.text}></textarea>
 //     <button type="submit">Save</button>
 
 //     </form>`;
-//   } else if (element.type === 'ai') {
+//   } else if (segment.type === 'ai') {
 //     return `<div>
-//     Text: ${element.text}
-//     User Question: ${element.userQuestion}
+//     Text: ${segment.text}
+//     User Question: ${segment.userQuestion}
 //     </div>`;
 //   }
 // }

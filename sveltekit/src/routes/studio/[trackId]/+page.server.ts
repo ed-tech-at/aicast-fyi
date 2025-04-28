@@ -7,21 +7,21 @@ import type { PageServerLoad, Actions } from './$types';
 const prisma = new PrismaClient();
 
 export const load: PageServerLoad = async ({ params }) => {
-  const episodeId = params.episodeId;
+  const trackId = params.trackId;
 
-  const episode = await prisma.episode.findUnique({
-    where: { id: episodeId },
+  const track = await prisma.track.findUnique({
+    where: { id: trackId },
   });
 
-  const episodeElements = await prisma.episodeElement.findMany({
-    where: { f_episodeId: episodeId },
+  const segments = await prisma.segment.findMany({
+    where: { f_trackId: trackId },
     orderBy: { position: 'asc' }
   });
 
   return {
-    episodeId,
-    episode,
-    episodeElements,
+    trackId,
+    track,
+    segments,
     date: new Date().toISOString(),
   };
 };
@@ -31,14 +31,14 @@ export const load: PageServerLoad = async ({ params }) => {
 //     const formData = await request.formData();
 //     const title = formData.get('title') as string;
 //     const desc = formData.get('desc') as string;
-//     const episodeId = params.episodeId;
+//     const trackId = params.trackId;
 
 //     if (!title || !desc) {
 //       return { status: 400, body: { error: 'Title and Description are required' } };
 //     }
 
-//     const updatedEpisode = await prisma.episode.update({
-//       where: { id: episodeId },
+//     const updatedTrack = await prisma.track.update({
+//       where: { id: trackId },
 //       data: {
 //         title,
 //         desc,
@@ -46,6 +46,6 @@ export const load: PageServerLoad = async ({ params }) => {
 //       },
 //     });
 
-//     return { status: 200, body: { id: updatedEpisode.id } };
+//     return { status: 200, body: { id: updatedTrack.id } };
 //   }
 // };

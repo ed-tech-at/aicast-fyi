@@ -1,4 +1,4 @@
-// src/routes/episode/[episodeUrl]/+page.server.ts
+// src/routes/track/[trackUrl]/+page.server.ts
 import { PrismaClient } from '@prisma/client';
 import type { PageServerLoad } from './$types';
 
@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 
 export const load: PageServerLoad = async ({ params }) => {
 
-  const episodes = await prisma.episode.findMany({
+  const tracks = await prisma.track.findMany({
     orderBy: {
       createdDate: 'desc'
     }
@@ -14,7 +14,7 @@ export const load: PageServerLoad = async ({ params }) => {
 
   return {
     
-    episodes,
+    tracks,
     date: new Date().toISOString(),
   };
 };

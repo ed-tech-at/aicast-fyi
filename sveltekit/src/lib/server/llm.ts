@@ -17,20 +17,20 @@ const openai = new OpenAI({
  *
  * @param developerPrompt - The system prompt that guides the AI.
  * @param userInput - The actual user question or input.
- * @param elementId - The ID of the related EpisodeElement.
+ * @param segmentId - The ID of the related Segment.
  * @returns {Promise<{response: string, cached: boolean}>} - The AI-generated response and cache status.
  */
 export async function generateLLMResponse(
     developerPrompt: string,
     userInput: string,
-    elementId: string
+    segmentId: string
 ): Promise<{ response: string }> {
     try {
         console.log('developerPrompt', developerPrompt);
         console.log('userInput', userInput);
-        console.log('elementId', elementId);
-        if (!developerPrompt || !userInput || !elementId) {
-            throw new Error('Developer prompt, user input, and elementId are required');
+        console.log('segmentId', segmentId);
+        if (!developerPrompt || !userInput || !segmentId) {
+            throw new Error('Developer prompt, user input, and segmentId are required');
         }
 
         // Check if an AI response already exists for the given input
@@ -62,7 +62,7 @@ export async function generateLLMResponse(
         // Store the new AI response in the database
         // const newAIResponse = await prisma.aiResponse.create({
         //     data: {
-        //         f_elementId: elementId,
+        //         f_segmentId: segmentId,
         //         developer_prompt: developerPrompt,
         //         user_input: userInput,
         //         response: responseText,

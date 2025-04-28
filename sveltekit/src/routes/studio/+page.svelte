@@ -8,18 +8,18 @@
   let createMessage = "";
   let lookupMessage = "";
   let lookupResult = null;
-  let createdEpisodes = [];
+  let createdTracks = [];
 
 
   if (browser) {
     onMount(() => {
-      const storedEpisodes = localStorage.getItem('createdEpisodes');
-      createdEpisodes = storedEpisodes ? JSON.parse(storedEpisodes) : [];
+      const storedTracks = localStorage.getItem('createdTracks');
+      createdTracks = storedTracks ? JSON.parse(storedTracks) : [];
     });
   }
 
-  // Function to create a new episode
-  async function createEpisode() {
+  // Function to create a new track
+  async function createTrack() {
       const res = await fetch('/studio', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -28,18 +28,18 @@
 
       const data = await res.json();
       if (data.success) {
-          createMessage = `New episode created with ID: ${data.episode.id}`;
+          createMessage = `New track created with ID: ${data.track.id}`;
 
-          createdEpisodes = [...createdEpisodes, data.episode];
-          localStorage.setItem('createdEpisodes', JSON.stringify(createdEpisodes));
+          createdTracks = [...createdTracks, data.track];
+          localStorage.setItem('createdTracks', JSON.stringify(createdTracks));
 
       } else {
           createMessage = `Error: ${data.error}`;
       }
   }
 
-  // Function to lookup an episode by ID
-  async function lookupEpisode() {
+  // Function to lookup an track by ID
+  async function lookupTrack() {
       const res = await fetch('/studio', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -48,11 +48,11 @@
 
       const data = await res.json();
       if (data.success) {
-          lookupResult = data.episode;
+          lookupResult = data.track;
           lookupMessage = "";
 
-          createdEpisodes = [...createdEpisodes, data.episode];
-          localStorage.setItem('createdEpisodes', JSON.stringify(createdEpisodes));
+          createdTracks = [...createdTracks, data.track];
+          localStorage.setItem('createdTracks', JSON.stringify(createdTracks));
 
       } else {
           lookupMessage = `Error: ${data.error}`;
@@ -61,28 +61,28 @@
   }
 </script>
 
-<h1>Create New Episode</h1>
+<h1>Create New Track</h1>
 <input type="email" bind:value={email} placeholder="Enter email" required />
-<button on:click={createEpisode}>Create Episode</button>
+<button on:click={createTrack}>Create Track</button>
 <p>{createMessage}</p>
 
-<h2>Created Episodes</h2>
+<h2>Created Tracks</h2>
 <ul>
-  {#each createdEpisodes as episode}
-    <li><a href={`/studio/${episode.id}`}>{episode.id}</a></li>
+  {#each createdTracks as track}
+    <li><a href={`/studio/${track.id}`}>{track.id}</a></li>
   {/each}
 </ul>
 
 <hr />
 
-<h2>Lookup Episode</h2>
-<input type="text" bind:value={lookupId} placeholder="Enter Episode ID" />
-<button on:click={lookupEpisode}>Lookup Episode</button>
+<h2>Lookup Track</h2>
+<input type="text" bind:value={lookupId} placeholder="Enter Track ID" />
+<button on:click={lookupTrack}>Lookup Track</button>
 <p>{lookupMessage}</p>
 
 {#if lookupResult}
   <div>
-      <h3>Episode Details</h3>
+      <h3>Track Details</h3>
       <p><strong>ID:</strong> {lookupResult.id}</p>
       <p><strong>Titel:</strong> {lookupResult.title}</p>
       <p><strong>Email:</strong> {lookupResult.email}</p>

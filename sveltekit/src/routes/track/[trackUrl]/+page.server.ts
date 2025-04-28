@@ -6,21 +6,21 @@ export const load: PageServerLoad = async ({ params, cookies }) => {
   
   const trackUrl = params.trackUrl as String; 
 
-  const episode = await prisma.episode.findFirst({
+  const track = await prisma.track.findFirst({
     where: { id: trackUrl },
   });
-  if (!episode) {
+  if (!track) {
     return {
       status: 404,
-      error: 'Episode not found',
+      error: 'Track not found',
     };
   }
-  const episodeElements = await prisma.episodeElement.findMany({
-    where: { f_episodeId: trackUrl },
+  const segments = await prisma.segment.findMany({
+    where: { f_trackId: trackUrl },
     orderBy: { position: 'asc' }
   });
   return {
-    episode,
-    episodeElements,
+    track,
+    segments,
   };
 }

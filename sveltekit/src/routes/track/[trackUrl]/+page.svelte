@@ -1,14 +1,14 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   
-  // import { renderEpisodeElementBackend } from '$lib/utils';
-  import type { Episode, EpisodeElement } from '@prisma/client';
+  // import { renderSegmentBackend } from '$lib/utils';
+  import type { Track, Segment } from '@prisma/client';
 
-  export let data: { episode: Episode; episodeElements: EpisodeElement[] };
-  // export let data: { episodeId: string; episode: Episode; episodeElements: EpisodeElement[]; date: string };
+  export let data: { track: Track; segments: Segment[] };
+  // export let data: { trackId: string; track: Track; segments: Segment[]; date: string };
 
-  // let title = data.episode.title || '';
-  // let desc = data.episode.desc || '';
+  // let title = data.track.title || '';
+  // let desc = data.track.desc || '';
 
   // let audioPlaylist = []; // Store audio filenames
   // let currentAudioIndex = 0;
@@ -17,15 +17,15 @@
   //   // Use an object to store audio in the correct order
   // let audioMap = {};
   let fragen = [];
-  for (let i = 0; i < data.episodeElements.length; i++) {
-    if (data.episodeElements[i].userQuestion?.length && !fragen.includes(data.episodeElements[i].userQuestion)) {
-      fragen.push(data.episodeElements[i].userQuestion);
+  for (let i = 0; i < data.segments.length; i++) {
+    if (data.segments[i].userQuestion?.length && !fragen.includes(data.segments[i].userQuestion)) {
+      fragen.push(data.segments[i].userQuestion);
     }
   }
 </script>
 
-<h1>Track {data.episode.title}</h1>
-<p>Track {data.episode.desc}</p>
+<h1>Track {data.track.title}</h1>
+<p>Track {data.track.desc}</p>
 
 
 {#each fragen as frage}

@@ -31,9 +31,13 @@
 	},
 	"dependencies": {
 		"@prisma/client": "^6.5.0",
+		"bcrypt": "^5.1.1",
 		"dotenv": "^16.4.7",
 		"elevenlabs": "^1.54.0",
+		"jsonwebtoken": "^9.0.2",
+		"nodemailer": "^6.10.1",
 		"openai": "^4.87.3",
+		"qrcode": "^1.5.4",
 		"uuid": "^11.1.0"
 	}
 }

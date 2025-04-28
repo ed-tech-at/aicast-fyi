@@ -24,17 +24,17 @@ if (!fs.existsSync(AUDIO_DIR)) {
  * 
  * @param text - The text to be converted into speech.
  * @param voiceId - The ID of the ElevenLabs voice to use.
- * @param elementId - The ID of the related EpisodeElement.
+ * @param segmentId - The ID of the related Segment.
  * @returns {Promise<string>} - The path to the saved or existing audio file.
  */
 export async function generateAudio(
     text: string,
     voiceId: string,
-    elementId: string
+    segmentId: string
 ): Promise<{filename: string; cached: boolean}> {
     try {
-        if (!text || !voiceId || !elementId) {
-            throw new Error('Text, voiceId, and elementId are required');
+        if (!text || !voiceId || !segmentId) {
+            throw new Error('Text, voiceId, and segmentId are required');
         }
 
         // Check if an audio file already exists for the given text and voiceId
@@ -57,7 +57,7 @@ export async function generateAudio(
         }
 
         // Generate and save new audio if not found
-        const newFile = await generateAndSaveAudio(text, voiceId, elementId);
+        const newFile = await generateAndSaveAudio(text, voiceId, segmentId);
         return { filename: newFile, cached: false }; // Return newly generated file
 
 
@@ -72,23 +72,28 @@ export async function generateAudio(
  * 
  * @param text - The text to be converted into speech.
  * @param voiceId - The ID of the ElevenLabs voice to use.
- * @param elementId - The ID of the related EpisodeElement.
+ * @param segmentId - The ID of the related Segment.
  * @returns {Promise<string>} - The path to the saved audio file.
  */
 export async function generateAndSaveAudio(
     text: string,
     voiceId: string,
-    elementId: string
+    language_code: string,
+    previous_text: string,
+    next_text: string,
+    segmentId: string
 ): Promise<string> {
     try {
         // Create a new audio record in the database
         const newAudioId = await newAudioUUID();
         const newAudio = await prisma.audio.create({
             data: {
-                f_elementId: elementId,
+                f_segmentId: segmentId,
                 voice_id: voiceId,
                 text: text,
-                language_code: "en-US", // Adjust as needed
+                previous_text: previous_text,
+                next_text: next_text,
+                language_code: language_code,
                 id: newAudioId
             }
         });
