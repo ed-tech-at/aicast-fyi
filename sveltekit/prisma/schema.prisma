@@ -92,6 +92,8 @@ model Segment {
 model Audio {
   id           String   @id @default(uuid())
   createdDate  DateTime @default(now())
+
+  folder String?
   
   segment  Segment? @relation(fields: [segmentId], references: [id], onDelete: SetNull)
   segmentId  String?
