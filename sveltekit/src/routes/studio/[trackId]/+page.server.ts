@@ -11,12 +11,15 @@ export const load: PageServerLoad = async ({ params }) => {
 
   const track = await prisma.track.findUnique({
     where: { id: trackId },
+    include: {
+      segments: true,
+    }
   });
+  if (!track) {
+    throw new Error('Track not found');
+  }
 
-  const segments = await prisma.segment.findMany({
-    where: { f_trackId: trackId },
-    orderBy: { position: 'asc' }
-  });
+  const segments = track.segments;
 
   return {
     trackId,

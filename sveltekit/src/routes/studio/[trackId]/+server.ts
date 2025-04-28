@@ -27,7 +27,7 @@ export async function POST({ request, params }) {
         console.log('form', form);
 
         if (action == "update") {
-            console.log('title', form.title);
+            console.log('title', form);
             
 
             // if (!title || !desc) {
@@ -39,6 +39,7 @@ export async function POST({ request, params }) {
                 data: {
                     title: form.title,
                     desc: form.desc,
+                    accessCode: form.accessCode,
                     updatedDate: new Date(),
                 },
             });

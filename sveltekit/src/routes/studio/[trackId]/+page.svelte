@@ -63,7 +63,7 @@
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        form: JSON.stringify({ title, desc }),
+        form: data.track,
         action: 'update'
       }),
     });
@@ -210,18 +210,21 @@
 
 <div>
   <a href="/studio">Back to Studio</a>
-  <h1>Track: {title}</h1>
-  <p>Track ID: <code>{data.trackId}</code></p>
+  <h1>Track: {data.track.title}</h1>
+  <p>Track ID: <code>{data.track.id}</code></p>
 
   {#if data.track}
     <form on:submit={updateTrack}>
       <div>
 
         <label for="title">Title:</label>
-        <input type="text" id="title" name="title" bind:value={title} placeholder="Untitled Track" />
+        <input type="text" id="title" name="title" bind:value={data.track.title} placeholder="Untitled Track" />
 
         <label for="desc">Description:</label>
-        <textarea id="desc" name="desc" bind:value={desc} placeholder="No description available"></textarea>
+        <textarea id="desc" name="desc" bind:value={data.track.desc} placeholder="No description available"></textarea>
+
+        <label for="accessCode">Access Code:</label>
+        <input type="text" id="accessCode" name="accessCode" bind:value={data.track.accessCode} placeholder="No access code available" />
 
         <label for="createdDate">Created Date: {new Date(data.track.createdDate).toLocaleString()}</label>
         {#if data.track.updatedDate}
