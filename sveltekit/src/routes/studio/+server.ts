@@ -3,13 +3,17 @@ import { json } from '@sveltejs/kit';
 import { PrismaClient } from '@prisma/client';
 
 import { newTrackUUID } from '$lib/server/utils';
+import { requireLogin } from '$lib/server/jwt';
 
 const prisma = new PrismaClient();
 
 
-export async function POST({ request }) {
+export async function POST({ request, cookies }) {
     try {
-      const { email, lookupId, action } = await request.json();
+      const { newUrl, lookupId, action } = await request.json();
+
+          const user = requireLogin(cookies);
+      
 
       if (action === 'create') {
         const id = await newTrackUUID();
@@ -17,7 +21,8 @@ export async function POST({ request }) {
         const newTrack = await prisma.track.create({
             data: {
                 id,
-                email,
+                URL: newUrl,
+                userId: user.id,
                 createdDate: new Date()
             }
         });

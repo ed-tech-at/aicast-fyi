@@ -40,10 +40,22 @@ export async function newAudioUUID() {
   return uuid;
 }
 
+export async function newUserUUID() {
+  let uuid;
+  let exists = true;
+
+  while (exists) {
+    uuid = uuidv4();
+    const existing = await prisma.user.findUnique({ where: { id: uuid } });
+    if (!existing) exists = false;
+  }
+  return uuid;
+}
+
 
 export async function getMaxPosition(trackId : string) {
   const maxPosition = await prisma.segment.findFirst({
-    where: { f_trackId: trackId },
+    where: { trackId: trackId },
     orderBy: { position: 'desc' },
   });
   return maxPosition ? maxPosition.position : 0;
@@ -53,7 +65,7 @@ export async function getMaxPosition(trackId : string) {
 export async function spaceSegmentPositionForTrack(trackId : string) {
   
   const segments = await prisma.segment.findMany({
-    where: { f_trackId: trackId },
+    where: { trackId: trackId },
     orderBy: { position: 'asc' },
   });
 

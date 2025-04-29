@@ -85,7 +85,7 @@
   async function segmentSubmit(event: Event) {
     
     event.preventDefault();
-    const form = event.target as HTMLFormSegment;
+    const form = event.target as HTMLFormElement;
     const formData = new FormData(form);
 
     // Extract the segment ID and text
@@ -264,7 +264,7 @@
           <!-- {segment.createdDate} {segment.type} {segment.position} -->
 
           <div class="segment">
-            Position: {segment.position}
+            Position: {segment.position} {segment.id}
             <div class="move-buttons2">
 
               <button on:click={() => moveSegmentUp(segment.id)}>Move Up</button>

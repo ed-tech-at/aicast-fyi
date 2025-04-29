@@ -1,15 +1,20 @@
-<script>
+<script lang="ts">
 
   import { onMount } from 'svelte';
   import { browser } from '$app/environment';
 
-  let email = "";
+  import type { JwtUserPayload } from '$lib/server/jwt.ts';
+    import type { ApiKey } from '@prisma/client';
+
+  let newUrl = "";
   let lookupId = "";
   let createMessage = "";
   let lookupMessage = "";
   let lookupResult = null;
   let createdTracks = [];
 
+
+  export let data: { user: JwtUserPayload, apiKeys: ApiKey[] };
 
   if (browser) {
     onMount(() => {
@@ -23,7 +28,7 @@
       const res = await fetch('/studio', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, action: 'create' })
+          body: JSON.stringify({ newUrl, action: 'create' })
       });
 
       const data = await res.json();
@@ -61,8 +66,11 @@
   }
 </script>
 
+User: {data.user.email}
+
+
 <h1>Create New Track</h1>
-<input type="email" bind:value={email} placeholder="Enter email" required />
+<input type="text" bind:value={newUrl} placeholder="Enter new URL" required />
 <button on:click={createTrack}>Create Track</button>
 <p>{createMessage}</p>
 
@@ -89,3 +97,15 @@
       <p><strong>Created Date:</strong> {new Date(lookupResult.createdDate).toLocaleString()}</p>
   </div>
 {/if}
+
+
+API Keys:
+<ul>
+  {#each data.apiKeys as key}
+  <li>ID: {key.id}</li>
+    <li>Endpoint: {key.endpoint}</li>
+    <li>Shortcode: {key.shortcode}</li>
+    <li>Key: {key.key}</li>
+    <br>
+  {/each}
+</ul>

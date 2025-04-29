@@ -15,7 +15,11 @@ datasource db {
 }
 
 model ApiKey {
-  id        Int     @id @default(autoincrement())
+  id Int @id @default(autoincrement())
+
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   endpoint  String?
   key       String?
   shortcode String?
@@ -43,7 +47,9 @@ model Track {
   id          String   @id @default(uuid())
   createdDate DateTime @default(now())
 
-  email    String
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   hashedPw String?
 
   URL String?
@@ -112,7 +118,7 @@ model Audio {
   segmentId String?
 
   //voiceInt Int?
-  //voice     Voice? @relation(fields: [voiceInt], references: [voiceInt], onDelete: Cascade )
+  //voice     Voice? @relation(fields: [voiceInt], references: [voiceInt], onDelete: SetNull )
 
   voice_id String?
 
@@ -134,4 +140,21 @@ model LLMGeneratedText {
 
   studentAnswer String?
   result        String?
+}
+
+model User {
+  id       String @id @default(uuid())
+  email    String @unique
+  password String
+
+  isAdmin Int @default(0)
+
+  cryptVersion Int @default(1)
+
+  isDeleted Int @default(0)
+
+  createdAt DateTime? @default(now())
+
+  Track  Track[]
+  ApiKey ApiKey[]
 }

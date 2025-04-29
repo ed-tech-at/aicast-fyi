@@ -83,7 +83,7 @@
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          form: JSON.stringify({ developerPrompt: segment.developerPrompt, userDemoInput: userDemoInput, segmentId: segment.id }), 
+          form: JSON.stringify({ systemPrompt: segment.systemPrompt, userDemoInput: userDemoInput, segmentId: segment.id }), 
           action: 'generateLLMResponse'
         })
       });
@@ -132,11 +132,11 @@
 
     {:else if segment.type === 'ai'}
 
-    <label>Developer Prompt</label>
-    <textarea bind:value={segment.developerPrompt} name="developerPrompt" class="developer-prompt"></textarea>
+    <label>system Prompt</label>
+    <textarea bind:value={segment.systemPrompt} name="systemPrompt" class="system-prompt"></textarea>
     <br>
     <label>User Question</label>
-    <textarea bind:value={segment.userQuestion} name="userQuestion" ></textarea>
+    <textarea bind:value={segment.studentQuestion} name="studentQuestion" ></textarea>
     <br>
 
     <label>User Demo Input</label>

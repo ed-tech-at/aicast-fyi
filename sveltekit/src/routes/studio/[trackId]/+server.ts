@@ -59,14 +59,14 @@ export async function POST({ request, params }) {
                 where: { id: segmentId },
                 data: {
                     text: form.text,
-                    userQuestion: form.userQuestion,
-                    developerPrompt: form.developerPrompt,
+                    studentQuestion: form.studentQuestion,
+                    systemPrompt: form.systemPrompt,
                     type: form.type,
                 },
             });
 
             const updatedSegments = await prisma.segment.findMany({
-                where: { f_trackId: trackId },
+                where: { trackId: trackId },
                 orderBy: { position: 'asc' }
             });
     
@@ -81,7 +81,7 @@ export async function POST({ request, params }) {
 
         const newSegment = await prisma.segment.create({
             data: {
-                f_trackId: trackId,
+                trackId: trackId,
                 id: uuid,
                 createdDate: new Date(),
                 position: position,
@@ -93,7 +93,7 @@ export async function POST({ request, params }) {
 
         // / Fetch updated segments
         const updatedSegments = await prisma.segment.findMany({
-            where: { f_trackId: trackId },
+            where: { trackId: trackId },
             orderBy: { position: 'asc' }
         });
 
@@ -120,7 +120,7 @@ export async function POST({ request, params }) {
 
          // / Fetch updated segments
         const updatedSegments = await prisma.segment.findMany({
-            where: { f_trackId: trackId },
+            where: { trackId: trackId },
             orderBy: { position: 'asc' }
         });
 
@@ -146,7 +146,7 @@ export async function POST({ request, params }) {
 
          // / Fetch updated segments
         const updatedSegments = await prisma.segment.findMany({
-            where: { f_trackId: trackId },
+            where: { trackId: trackId },
             orderBy: { position: 'asc' }
         });
 
@@ -175,7 +175,7 @@ export async function POST({ request, params }) {
                 // return {filename: `${existingAudio.id}.mp3`, cached: true}; // Return the existing file
             }
 
-            return json({ success: true, cached: true, filename: `${existingAudio.id}.mp3` });
+            return json({ success: true, cached: true, filename: `${existingAudio.folder}/${existingAudio.id}.mp3` });
         }
          else {
             // console.log('Audio not found, generating new audio...');

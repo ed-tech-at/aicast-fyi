@@ -47,7 +47,7 @@ export async function generateAudio(
         });
 
         if (existingAudio) {
-            const existingAudioPath = path.join(AUDIO_DIR, `${existingAudio.id}.mp3`);
+            const existingAudioPath = path.join(AUDIO_DIR, existingAudio.folder, `${existingAudio.id}.mp3`);
             // console.log(`1. Returning existing audio file: ${existingAudioPath}`);
             if (fs.existsSync(existingAudioPath)) {
                 console.log(`Returning existing audio file: ${existingAudioPath}`);
@@ -86,19 +86,29 @@ export async function generateAndSaveAudio(
     try {
         // Create a new audio record in the database
         const newAudioId = await newAudioUUID();
+
+        // Generate a string in the format "yyyy-mm"
+        const currentDate = new Date();
+        const yearMonth = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}`;
+
         const newAudio = await prisma.audio.create({
             data: {
-                f_segmentId: segmentId,
+                segmentId: segmentId,
                 voice_id: voiceId,
+                folder: yearMonth,
                 text: text,
-                previous_text: previous_text,
-                next_text: next_text,
+                previousText: previous_text,
+                nextText: next_text,
                 language_code: language_code,
                 id: newAudioId
             }
         });
 
-        const audioPath = path.join(AUDIO_DIR, `${newAudio.id}.mp3`); // Use UUID as filename
+        
+
+
+
+        const audioPath = path.join(AUDIO_DIR, yearMonth, `${newAudio.id}.mp3`); // Use UUID as filename
 
         console.log(`Generating speech for: "${text}". Voice: ${voiceId}`);
 
@@ -123,11 +133,17 @@ export async function generateAndSaveAudio(
 
         const audioBuffer = await response.arrayBuffer(); // Get audio as a binary buffer
 
+        // Ensure the subfolder exists before saving the file
+        const audioFolder = path.dirname(audioPath);
+        if (!fs.existsSync(audioFolder)) {
+            fs.mkdirSync(audioFolder, { recursive: true });
+        }
+
         fs.writeFileSync(audioPath, Buffer.from(audioBuffer)); // Save MP3 file
 
         console.log(`Saved new audio file: ${audioPath}`);
 
-        return `${newAudio.id}.mp3`; // Return the saved file path
+        return `${yearMonth}/${newAudio.id}.mp3`; // Return the saved file path
 
     } catch (error) {
         console.error("Error generating audio:", error);

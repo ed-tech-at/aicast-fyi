@@ -3,8 +3,8 @@ import fs from 'fs';
 import path from 'path';
 
 export async function GET({ params }) {
-    const { filename } = params;
-    const filePath = path.resolve('data/audio', filename);
+    const { folder, filename } = params;
+    const filePath = path.resolve('data/audio', folder, filename);
 
     // console.log('accessing ', filePath);
 
