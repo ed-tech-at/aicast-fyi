@@ -49,7 +49,7 @@ async function fetchVoices() {
 
       const result = await response.json();
       voices = result.voices || []; // Store voices list
-      console.log('Fetched voices:', voices);
+      // console.log('Fetched voices:', voices);
     } catch (error) {
       console.error('Error fetching voices:', error);
     }

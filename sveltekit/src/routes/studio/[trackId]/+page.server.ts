@@ -26,7 +26,7 @@ export const load: PageServerLoad = async ({ params }) => {
   if (!track) {
     throw new Error('Track not found');
   }
-  console.log('track', track);
+  // console.log('track', track);
 
   const segments = track.segments;
 

@@ -11,7 +11,7 @@
 
   export let onAudioLoaded; // Callback to pass audio filenames up
 
-  console.log('Segment:', segment);
+  // console.log('Segment:', segment);
 
   
   function handleSegmentSubmit(event: Event) {
@@ -47,11 +47,12 @@
   let voiceId = "NBqeXKdZHweef6y0B67V";
   const voiceIdM = "NBqeXKdZHweef6y0B67V"; // Replace with actual voice ID
   // const voiceIdF = "Z3R5wn05IrDiVCyEkUrK"; // Replace with actual voice ID
-  const voiceIdF = "uvysWDLbKpA4XvpD3GI6"; // Replace with actual voice ID
+  // const voiceIdF = "uvysWDLbKpA4XvpD3GI6"; // Replace with actual voice ID
+  const voiceIdF = "ZQFCSsF1tIcjtMZJ6VCA"; // Replace with actual voice ID
 
   async function checkAudioCache() {
 
-    console.log('Checking audio cache for segment:', segment);
+    // console.log('Checking audio cache for segment:', segment);
     if (segment.audio != null) {
       audioSegment = segment.audio.folder + "/" + segment.audio.id + ".mp3";
       return;

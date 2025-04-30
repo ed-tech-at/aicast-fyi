@@ -20,16 +20,16 @@
 
     // When audio is loaded, store it in the correct order
   function onAudioLoaded(position, filename) {
-    console.log('Audio loaded:', position, filename);
+    // console.log('Audio loaded:', position, filename);
     audioMap[position] = filename;
-    console.log('Audio audioMap:', audioMap);
+    // console.log('Audio audioMap:', audioMap);
 
     // Once all segments are processed, rebuild the ordered playlist
     audioPlaylist = Object.entries(audioMap)
       .sort(([a], [b]) => Number(a) - Number(b)) // Sort by numeric position
       .map(([_, filename]) => filename); // Extract filenames
 
-    console.log('Audio playlist:', audioPlaylist);
+    // console.log('Audio playlist:', audioPlaylist);
   }
 
 
@@ -72,7 +72,7 @@
     
     if (result.success) {
       
-      console.log('Track updated successfully:', result);
+      // console.log('Track updated successfully:', result);
 
       data.track = result.track;
 
@@ -96,12 +96,12 @@
     const developerPrompt = formData.get("developerPrompt") as string; // Change this line to correctly get the user input
 
 
-    console.log("Form Data:", formData);
+    // console.log("Form Data:", formData);
 
-    console.log("Segment ID:", segmentId);
-    console.log("Text:", text);
-    console.log("User Question:", userQuestion); // Log userQuestion for debugging
-    console.log("Type:", type); // Log type for debugging
+    // console.log("Segment ID:", segmentId);
+    // console.log("Text:", text);
+    // console.log("User Question:", userQuestion); // Log userQuestion for debugging
+    // console.log("Type:", type); // Log type for debugging
     
 
     const response = await fetch(`/studio/${data.trackId}`, {
@@ -119,7 +119,7 @@
     
     if (result.success) {
       
-      console.log('Segment updated successfully:', result);
+      // console.log('Segment updated successfully:', result);
 
       data.segments = result.segments; // Update track segments
 
@@ -146,18 +146,18 @@
     if (result.success) {
       data.segments = result.segments;
 
-      console.log('Segment created successfully:', result.segments);
+      // console.log('Segment created successfully:', result.segments);
     } else {
       console.error('Error creating segment:', result.error);
     }
   }
 
 
-  console.log('data:', data);
+  // console.log('data:', data);
 
   async function moveSegmentDown(segmentId: string) {
     // Logic for moving the segment down will be implemented here.
-    console.log('Moving segment down:', segmentId);
+    // console.log('Moving segment down:', segmentId);
   
     const response = await fetch(`/studio/${data.trackId}`, {
       method: 'POST',
@@ -174,7 +174,7 @@
 
     if (result.success) {
       data.segments = result.segments;
-      console.log('Segments updated successfully:', result);
+      // console.log('Segments updated successfully:', result);
     } else {
       console.error('Error moving segment down:', result.error);
     }
@@ -183,7 +183,7 @@
 
   async function moveSegmentUp(segmentId: string) {
     // Logic for moving the segment up will be implemented here.
-    console.log('Moving segment up:', segmentId);
+    // console.log('Moving segment up:', segmentId);
   
     const response = await fetch(`/studio/${data.trackId}`, {
       method: 'POST',
@@ -200,7 +200,7 @@
 
     if (result.success) {
       data.segments = result.segments;
-      console.log('Segments updated successfully:', result);
+      // console.log('Segments updated successfully:', result);
     } else {
       console.error('Error moving segment down:', result.error);
     }

@@ -26,9 +26,9 @@ export async function generateLLMResponse(
     segmentId: string
 ): Promise<{ response: string }> {
     try {
-        console.log('developerPrompt', developerPrompt);
-        console.log('userInput', userInput);
-        console.log('segmentId', segmentId);
+        // console.log('developerPrompt', developerPrompt);
+        // console.log('userInput', userInput);
+        // console.log('segmentId', segmentId);
         if (!developerPrompt || !userInput || !segmentId) {
             throw new Error('Developer prompt, user input, and segmentId are required');
         }
@@ -47,7 +47,7 @@ export async function generateLLMResponse(
         // }
 
         // Generate AI response using OpenAI's GPT-4o-mini
-        console.log(`Generating AI response for input: "${userInput}"`);
+        // console.log(`Generating AI response for input: "${userInput}"`);
         const aiResponse = await openai.chat.completions.create({
             model: "gpt-4o-mini", // Use GPT-4o-mini or a different OpenAI model if preferred
             messages: [

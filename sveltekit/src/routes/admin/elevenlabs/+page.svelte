@@ -19,7 +19,7 @@
         throw new Error('Network response was not ok');
       }
       const responseData = await response.json();
-      console.log(responseData.voices);
+      // console.log(responseData.voices);
       voices = responseData.voices;
     } catch (error) {
       console.error('Error fetching voices:', error);
@@ -55,15 +55,15 @@
       });
 
       const result = await response.json();
-      console.log(result);
-      console.log("result");
+      // console.log(result);
+      // console.log("result");
 
 
 
       if (result.success) {
         // alert(`Audio generated successfully! Check /data/audio/${result.filename}`);
-        console.log("Filename: " + result.filename);
-        console.log("Cached: " + result.cached);
+        // console.log("Filename: " + result.filename);
+        // console.log("Cached: " + result.cached);
       } else {
         alert(`Error: ${result.error}`);
       }

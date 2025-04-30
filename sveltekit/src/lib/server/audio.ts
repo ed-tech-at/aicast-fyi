@@ -49,7 +49,7 @@ export async function generateAudio(
             const existingAudioPath = path.join(AUDIO_DIR, existingAudio.folder, `${existingAudio.id}.mp3`);
             // console.log(`1. Returning existing audio file: ${existingAudioPath}`);
             if (fs.existsSync(existingAudioPath)) {
-                console.log(`Returning existing audio file: ${existingAudioPath}`);
+                // console.log(`Returning existing audio file: ${existingAudioPath}`);
                 return {filename: `${existingAudio.id}.mp3`, cached: true}; // Return the existing file
             }
 
@@ -112,7 +112,7 @@ export async function generateAndSaveAudio(
 
         const audioPath = path.join(AUDIO_DIR, yearMonth, `${newAudio.id}.mp3`); // Use UUID as filename
 
-        console.log(`Generating speech for: "${text}". Voice: ${voiceId}`);
+        // console.log(`Generating speech for: "${text}". Voice: ${voiceId}`);
 
         const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`, {
             method: 'POST',
@@ -151,7 +151,7 @@ export async function generateAndSaveAudio(
             }
         });
 
-        console.log(`Saved new audio file: ${audioPath}`);
+        // console.log(`Saved new audio file: ${audioPath}`);
 
         return `${yearMonth}/${newAudio.id}.mp3`; // Return the saved file path
 

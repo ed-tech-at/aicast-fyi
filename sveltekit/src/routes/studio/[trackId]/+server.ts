@@ -12,15 +12,16 @@ import { generateLLMResponse } from '$lib/server/llm.js';
 
 const voiceIdM = "NBqeXKdZHweef6y0B67V"; // Replace with actual voice ID
 // const voiceIdF = "Z3R5wn05IrDiVCyEkUrK"; // Replace with actual voice ID
-const voiceIdF = "uvysWDLbKpA4XvpD3GI6"; // Replace with actual voice ID
+// const voiceIdF = "uvysWDLbKpA4XvpD3GI6"; // Replace with actual voice ID
+const voiceIdF = "ZQFCSsF1tIcjtMZJ6VCA"; // Replace with actual voice ID
 
 const prisma = new PrismaClient();
 
 export async function POST({ request, params }) {
     try {
-        console.log('params', params);
+        // console.log('params', params);
         let { form, action, segmentId } = await request.json();
-        console.log('action', action);
+        // console.log('action', action);
         
         if (typeof form === 'string') {
             form = JSON.parse(form);
@@ -28,10 +29,10 @@ export async function POST({ request, params }) {
 
         const trackId = params.trackId;
 
-        console.log('form', form);
+        // console.log('form', form);
 
         if (action == "update") {
-            console.log('title', form);
+            // console.log('title', form);
             
 
             // if (!title || !desc) {
@@ -52,7 +53,7 @@ export async function POST({ request, params }) {
 
         }
         if (action == "updateSegment") {
-            console.log('update segment', form.segmentId);
+            // console.log('update segment', form.segmentId);
             const segmentId = form.segmentId;
 
             // if (!title || !desc) {
@@ -91,7 +92,7 @@ export async function POST({ request, params }) {
             return json({ success: true, segments: updatedSegments });
 
         } else if (action == 'createSegment') {
-        console.log('createSegment!');
+        // console.log('createSegment!');
 
         const position = await getMaxPosition(trackId) + 10;
 
@@ -107,7 +108,7 @@ export async function POST({ request, params }) {
             }
         });
 
-        console.log('newSegment', newSegment);
+        // console.log('newSegment', newSegment);
 
         // / Fetch updated segments
         const updatedSegments = await prisma.segment.findMany({
@@ -122,7 +123,7 @@ export async function POST({ request, params }) {
 
 
         
-        console.log('segmentId::', segmentId);
+        // console.log('segmentId::', segmentId);
         const trackId = params.trackId;
 
         const segment = await prisma.segment.update({
@@ -148,7 +149,7 @@ export async function POST({ request, params }) {
 
 
         
-        console.log('segmentId::', segmentId);
+        // console.log('segmentId::', segmentId);
         const trackId = params.trackId;
 
         const segment = await prisma.segment.update({
@@ -171,7 +172,7 @@ export async function POST({ request, params }) {
         return json({ success: true, segments: updatedSegments });
 
       } else if (action === "checkAudioGenerated") {
-        console.log('Checking audio cache for text:', form.text);
+        // console.log('Checking audio cache for text:', form.text);
 
         const existingAudio = await prisma.audio.findFirst({
             where: {
@@ -181,7 +182,7 @@ export async function POST({ request, params }) {
         });
 
         if (existingAudio) {
-            console.log('Audio is already generated in checkAudioGenerated:', existingAudio.id);
+            // console.log('Audio is already generated in checkAudioGenerated:', existingAudio.id);
 
             await prisma.segment.update({
                 where: { id: form.segmentId },
@@ -209,7 +210,7 @@ export async function POST({ request, params }) {
             return json({ success: false, cached: false, filename: null });
         }
     } else if (action === "checkAudioVersion") {
-        console.log('Checking audio cache for text:', form.text);
+        // console.log('Checking audio cache for text:', form.text);
 
         const existingAudio = await prisma.audio.findFirst({
             where: {
@@ -219,7 +220,7 @@ export async function POST({ request, params }) {
         });
 
         if (existingAudio) {
-            console.log('Audio is already generated in checkAudioGenerated:', existingAudio.id);
+            // console.log('Audio is already generated in checkAudioGenerated:', existingAudio.id);
 
             // await prisma.segment.update({
             //     where: { id: form.segmentId },
@@ -248,14 +249,14 @@ export async function POST({ request, params }) {
         }
     } else if (action === "generateAudio") {
 
-            console.log('Audio not found, generating new audio...');
+            // console.log('Audio not found, generating new audio...');
             const { filename2, cached2 } = await generateAudio(form.text, voiceIdF, form.segmentId);
             const { filename, cached } = await generateAudio(form.text, voiceIdM, form.segmentId);
             return json({ success: true, cached: cached, filename: filename });
         
      } else if (action === "generateLLMResponse") {
 
-            console.log('Generating LLM response... for dev' + form.developerPrompt);
+            // console.log('Generating LLM response... for dev' + form.developerPrompt);
             
             const { response } = await generateLLMResponse(form.developerPrompt, form.userDemoInput, form.segmentId);
             return json({ success: true, response: response });
