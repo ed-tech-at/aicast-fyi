@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import type { PageServerLoad, Actions } from './$types';
+import { audio } from 'elevenlabs/api/resources/voices/resources/pvc/resources/samples';
 // import { updated } from '$app/state';
 
 
@@ -12,12 +13,20 @@ export const load: PageServerLoad = async ({ params }) => {
   const track = await prisma.track.findUnique({
     where: { id: trackId },
     include: {
-      segments: true,
+      segments: {
+        include: {
+          audio: true,
+        },
+        orderBy: {
+          position: 'asc',
+        },
+      },     
     }
   });
   if (!track) {
     throw new Error('Track not found');
   }
+  console.log('track', track);
 
   const segments = track.segments;
 

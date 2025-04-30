@@ -40,7 +40,6 @@ export async function generateAudio(
         // Check if an audio file already exists for the given text and voiceId
         const existingAudio = await prisma.audio.findFirst({
             where: {
-                
                 text: text,
                 voice_id: voiceId
             }
@@ -58,6 +57,9 @@ export async function generateAudio(
 
         // Generate and save new audio if not found
         const newFile = await generateAndSaveAudio(text, voiceId, segmentId);
+
+
+
         return { filename: newFile, cached: false }; // Return newly generated file
 
 
@@ -78,9 +80,9 @@ export async function generateAudio(
 export async function generateAndSaveAudio(
     text: string,
     voiceId: string,
-    language_code: string,
-    previous_text: string,
-    next_text: string,
+    // language_code: string,
+    // previous_text: string,
+    // next_text: string,
     segmentId: string
 ): Promise<string> {
     try {
@@ -93,13 +95,13 @@ export async function generateAndSaveAudio(
 
         const newAudio = await prisma.audio.create({
             data: {
-                segmentId: segmentId,
+                segmentCreatedId: segmentId,
                 voice_id: voiceId,
                 folder: yearMonth,
                 text: text,
-                previousText: previous_text,
-                nextText: next_text,
-                language_code: language_code,
+                // previousText: previous_text,
+                // nextText: next_text,
+                // language_code: language_code,
                 id: newAudioId
             }
         });
@@ -122,6 +124,7 @@ export async function generateAndSaveAudio(
                 text: text,
                 voice_id: voiceId,
                 // model_id: "eleven_monolingual_v1",
+                language_code: "de",
                 model_id: "eleven_v2_5_flash",
                 output_format: "mp3"
             })
@@ -140,6 +143,13 @@ export async function generateAndSaveAudio(
         }
 
         fs.writeFileSync(audioPath, Buffer.from(audioBuffer)); // Save MP3 file
+
+        await prisma.segment.update({
+            where: { id: segmentId },
+            data: {
+                audioId: newAudio.id,
+            }
+        });
 
         console.log(`Saved new audio file: ${audioPath}`);
 

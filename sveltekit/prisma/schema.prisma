@@ -101,10 +101,13 @@ model Segment {
   systemPrompt    String?
   defaultAnswer   String?
 
+  audioId String?
+  audio   Audio?  @relation(fields: [audioId], references: [id], onDelete: SetNull)
+
   position Int @default(10)
 
   //audioVersion   Int?
-  audios            Audio[]
+  //audios            Audio[]
   LLMGeneratedTexts LLMGeneratedText[]
 }
 
@@ -114,8 +117,9 @@ model Audio {
 
   folder String?
 
-  segment   Segment? @relation(fields: [segmentId], references: [id], onDelete: SetNull)
-  segmentId String?
+  //segmentCreated    Segment? @relation("segmentCreatedRelation", fields: [segmentCreatedId], references: [id], onDelete: SetNull)
+
+  segmentCreatedId String?
 
   //voiceInt Int?
   //voice     Voice? @relation(fields: [voiceInt], references: [voiceInt], onDelete: SetNull )
@@ -127,6 +131,8 @@ model Audio {
   language_code String?
   previousText  String?
   nextText      String?
+
+  segments Segment[]
 
   //version   Int?
 }

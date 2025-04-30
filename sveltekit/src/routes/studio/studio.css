@@ -46,7 +46,7 @@ textarea {
   min-height: 60px;
 }
 
-button {
+button, .button {
   background: #7735cc;
   color: white;
   border: none;

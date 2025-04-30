@@ -10,6 +10,10 @@ import path from 'path';
 import { generateAudio } from '$lib/server/audio';
 import { generateLLMResponse } from '$lib/server/llm.js';
 
+const voiceIdM = "NBqeXKdZHweef6y0B67V"; // Replace with actual voice ID
+// const voiceIdF = "Z3R5wn05IrDiVCyEkUrK"; // Replace with actual voice ID
+const voiceIdF = "uvysWDLbKpA4XvpD3GI6"; // Replace with actual voice ID
+
 const prisma = new PrismaClient();
 
 export async function POST({ request, params }) {
@@ -54,6 +58,20 @@ export async function POST({ request, params }) {
             // if (!title || !desc) {
                 // return json({ success: false, error: 'Title and Description are required' }, { status: 400 });
             // }
+
+            const oldSegment = await prisma.segment.findUnique({
+                where: { id: segmentId },
+            });
+
+
+            if (oldSegment?.text !== form.text) {
+                await prisma.segment.update({
+                    where: { id: segmentId },
+                    data: {
+                        audioId: null,
+                    }
+                });
+            }
             
             const updatedSegment = await prisma.segment.update({
                 where: { id: segmentId },
@@ -165,15 +183,60 @@ export async function POST({ request, params }) {
         if (existingAudio) {
             console.log('Audio is already generated in checkAudioGenerated:', existingAudio.id);
 
+            await prisma.segment.update({
+                where: { id: form.segmentId },
+                data: {
+                    audioId: existingAudio.id
+                }
+            });
 
-            const AUDIO_DIR = path.join(process.cwd(), 'static', 'data', 'audio'); // Directory for storing MP3s
+
+            // const AUDIO_DIR = path.join(process.cwd(), 'static', 'data', 'audio'); // Directory for storing MP3s
             
-            const existingAudioPath = path.join(AUDIO_DIR, `${existingAudio.id}.mp3`);
-            // console.log(`1. Returning existing audio file: ${existingAudioPath}`);
-            if (fs.existsSync(existingAudioPath)) {
-                console.log(`Returning existing audio file: ${existingAudioPath}`);
-                // return {filename: `${existingAudio.id}.mp3`, cached: true}; // Return the existing file
+            // const existingAudioPath = path.join(AUDIO_DIR, `${existingAudio.id}.mp3`);
+            // // console.log(`1. Returning existing audio file: ${existingAudioPath}`);
+            // if (fs.existsSync(existingAudioPath)) {
+            //     console.log(`Returning existing audio file: ${existingAudioPath}`);
+            //     // return {filename: `${existingAudio.id}.mp3`, cached: true}; // Return the existing file
+            // }
+
+            return json({ success: true, cached: true, filename: `${existingAudio.folder}/${existingAudio.id}.mp3` });
+        }
+         else {
+            // console.log('Audio not found, generating new audio...');
+            // const generatedAudioFilename = await generateAudio(form.text, form.voiceId, form.segmentId);
+            // return json({ success: true, cached: false, filename: generatedAudioFilename });
+            return json({ success: false, cached: false, filename: null });
+        }
+    } else if (action === "checkAudioVersion") {
+        console.log('Checking audio cache for text:', form.text);
+
+        const existingAudio = await prisma.audio.findFirst({
+            where: {
+                text: form.text,
+                voice_id: form.voiceId
             }
+        });
+
+        if (existingAudio) {
+            console.log('Audio is already generated in checkAudioGenerated:', existingAudio.id);
+
+            // await prisma.segment.update({
+            //     where: { id: form.segmentId },
+            //     data: {
+            //         audioId: existingAudio.id
+            //     }
+            // });
+
+
+            // const AUDIO_DIR = path.join(process.cwd(), 'static', 'data', 'audio'); // Directory for storing MP3s
+            
+            // const existingAudioPath = path.join(AUDIO_DIR, `${existingAudio.id}.mp3`);
+            // // console.log(`1. Returning existing audio file: ${existingAudioPath}`);
+            // if (fs.existsSync(existingAudioPath)) {
+            //     console.log(`Returning existing audio file: ${existingAudioPath}`);
+            //     // return {filename: `${existingAudio.id}.mp3`, cached: true}; // Return the existing file
+            // }
 
             return json({ success: true, cached: true, filename: `${existingAudio.folder}/${existingAudio.id}.mp3` });
         }
@@ -186,7 +249,8 @@ export async function POST({ request, params }) {
     } else if (action === "generateAudio") {
 
             console.log('Audio not found, generating new audio...');
-            const { filename, cached } = await generateAudio(form.text, form.voiceId, form.segmentId);
+            const { filename2, cached2 } = await generateAudio(form.text, voiceIdF, form.segmentId);
+            const { filename, cached } = await generateAudio(form.text, voiceIdM, form.segmentId);
             return json({ success: true, cached: cached, filename: filename });
         
      } else if (action === "generateLLMResponse") {
