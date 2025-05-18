@@ -1,0 +1,173 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider          = "postgresql"
+  url               = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+}
+
+model ApiKey {
+  id Int @id @default(autoincrement())
+
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  endpoint  String?
+  key       String?
+  shortcode String?
+  mailRegex String?
+
+  createdDate  DateTime @default(now())
+  voices       Voice[]
+  tracks       Track[]  @relation("ApiKeyLLMRelation")
+  apiKeyAudios Track[]  @relation("ApiKeyAudioRelation")
+}
+
+model Voice {
+  voiceInt Int  @id @default(autoincrement())
+  apiKeyId Int?
+
+  apiKey ApiKey? @relation(fields: [apiKeyId], references: [id], onDelete: Cascade)
+
+  voice_id String?
+
+  displayName   String?
+  language_code String?
+}
+
+model Track {
+  id          String   @id @default(uuid())
+  createdDate DateTime @default(now())
+
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  hashedPw String?
+
+  URL String?
+
+  title String?
+  desc  String?
+
+  apiKeyLLM   ApiKey? @relation("ApiKeyLLMRelation", fields: [apiKeyLLMId], references: [id], onDelete: SetNull)
+  apiKeyLLMId Int?
+
+  apiKeyAudio   ApiKey? @relation("ApiKeyAudioRelation", fields: [apiKeyAudioId], references: [id], onDelete: SetNull)
+  apiKeyAudioId Int?
+
+  updatedDate DateTime?
+
+  visibility Int     @default(1) // 1... Public, 2... Shared Secret in accessCode, 3... JSON String Array in accessCode
+  accessCode String?
+
+  recycleLLM Int @default(1)
+
+  episodes Episode[]
+  segments Segment[]
+}
+
+model Episode {
+  id          String   @id @default(uuid())
+  createdDate DateTime @default(now())
+
+  track   Track  @relation(fields: [trackId], references: [id], onDelete: Cascade)
+  trackId String
+
+  voice_id String?
+
+  studentName String?
+
+  answers String?
+}
+
+model Segment {
+  id          String   @id @default(uuid())
+  createdDate DateTime @default(now())
+
+  track   Track  @relation(fields: [trackId], references: [id], onDelete: Cascade)
+  trackId String
+
+  type String
+
+  text String?
+
+  studentQuestion String?
+  systemPrompt    String?
+  defaultAnswer   String?
+
+  audioId String?
+  audio   Audio?  @relation(fields: [audioId], references: [id], onDelete: SetNull)
+
+  position Int @default(10)
+
+  //audioVersion   Int?
+  //audios            Audio[]
+  LLMGeneratedTexts LLMGeneratedText[]
+}
+
+model Audio {
+  id          String   @id @default(uuid())
+  createdDate DateTime @default(now())
+
+  folder String?
+
+  //segmentCreated    Segment? @relation("segmentCreatedRelation", fields: [segmentCreatedId], references: [id], onDelete: SetNull)
+
+  segmentCreatedId String?
+
+  //voiceInt Int?
+  //voice     Voice? @relation(fields: [voiceInt], references: [voiceInt], onDelete: SetNull )
+
+  voice_id String?
+
+  text String?
+
+  hashText String?
+
+  language_code String?
+  previousText  String?
+  nextText      String?
+
+  segments Segment[]
+
+  //version   Int?
+}
+
+model LLMGeneratedText {
+  id          String   @id @default(uuid())
+  createdDate DateTime @default(now())
+
+  segment   Segment @relation(fields: [segmentId], references: [id], onDelete: Cascade)
+  segmentId String
+
+  systemPrompt  String?
+  studentAnswer String?
+  result        String?
+  hashText String?
+
+}
+
+model User {
+  id       String @id @default(uuid())
+  email    String @unique
+  password String
+
+  isAdmin Int @default(0)
+
+  cryptVersion Int @default(1)
+
+  isDeleted Int @default(0)
+
+  createdAt DateTime? @default(now())
+
+  Track  Track[]
+  ApiKey ApiKey[]
+}

@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "ApiKey" ALTER COLUMN "userId" DROP NOT NULL;
