@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+// import { PrismaClient } from '@prisma/client';
 import type { PageServerLoad, Actions } from './$types';
 import { audio } from 'elevenlabs/api/resources/voices/resources/pvc/resources/samples';
 // import { updated } from '$app/state';
@@ -7,7 +7,8 @@ import type { Voice } from '@prisma/client';
 
 import { error } from '@sveltejs/kit';
 
-const prisma = new PrismaClient();
+// const prisma = new PrismaClient();
+import { prisma } from '$lib/server/db'
 
 export const load: PageServerLoad = async ({ params, cookies }) => {
 

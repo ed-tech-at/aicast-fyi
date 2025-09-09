@@ -1,5 +1,5 @@
 import { json } from '@sveltejs/kit';
-import { PrismaClient } from '@prisma/client';
+// import { PrismaClient } from '@prisma/client';
 
 import { newSegmentUUID, getMaxPosition, spaceSegmentPositionForTrack } from '$lib/server/utils';
 import { get } from 'svelte/store';
@@ -15,7 +15,9 @@ const voiceIdM = "NBqeXKdZHweef6y0B67V"; // Replace with actual voice ID
 // const voiceIdF = "uvysWDLbKpA4XvpD3GI6"; // Replace with actual voice ID
 const voiceIdF = "uvysWDLbKpA4XvpD3GI6"; // Replace with actual voice ID
 
-const prisma = new PrismaClient();
+// const prisma = new PrismaClient();
+import { prisma } from '$lib/server/db'
+
 
 export async function POST({ request, params }) {
     try {

@@ -1,9 +1,10 @@
-import { PrismaClient } from '@prisma/client';
+// import { PrismaClient } from '@prisma/client';
+import { prisma } from '$lib/server/db'
 
 import { v4 as uuidv4 } from 'uuid';
 import { createHash } from 'crypto';
 
-const prisma = new PrismaClient();
+// const prisma = new PrismaClient();
 
 export async function newTrackUUID() {
   let uuid;

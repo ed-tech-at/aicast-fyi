@@ -1,11 +1,13 @@
-import { PrismaClient } from '@prisma/client';
+// import { PrismaClient } from '@prisma/client';
 import fs from 'fs';
 import path from 'path';
 
 import { hashString } from './utils'; // Import the hashString function
 
 
-const prisma = new PrismaClient(); // Initialize Prisma Client
+// const prisma = new PrismaClient(); // Initialize Prisma Client
+import { prisma } from '$lib/server/db'
+
 const AUDIO_DIR = path.join(process.cwd(), 'data', 'audio'); // Directory for storing MP3s
 
 // console.log("Current working directory:", process.cwd());
