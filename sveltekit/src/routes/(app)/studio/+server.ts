@@ -1,11 +1,12 @@
 import { json } from '@sveltejs/kit';
 
-import { PrismaClient } from '@prisma/client';
+// import { PrismaClient } from '@prisma/client';
 
 import { newTrackUUID } from '$lib/server/utils';
 import { requireLogin } from '$lib/server/jwt';
 
-const prisma = new PrismaClient();
+// const prisma = new PrismaClient();
+import { prisma } from '$lib/server/db'
 
 
 export async function POST({ request, cookies }) {
