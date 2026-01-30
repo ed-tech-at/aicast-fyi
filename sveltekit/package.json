@@ -31,7 +31,7 @@
 	},
 	"dependencies": {
 		"@prisma/client": "^6.7.0",
-		"bcrypt": "^5.1.1",
+		"bcrypt": "^6.0.0",
 		"dotenv": "^16.4.7",
 		"elevenlabs": "^1.54.0",
 		"jsonwebtoken": "^9.0.2",
